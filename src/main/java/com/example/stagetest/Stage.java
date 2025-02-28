@@ -3,6 +3,9 @@ package com.example.stagetest;
 import jakarta.persistence.*;
 import lombok.*;
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
+
 @Entity
 @Getter
 @Setter
@@ -22,13 +25,20 @@ public class Stage {
     @Enumerated(EnumType.STRING)
     private Statut statut;
 
-    private Long etudiantId;  // Id de l'étudiant récupéré via `User-Service`
+    @Enumerated(EnumType.STRING)
+    private TypeStage typeStage;
 
-    private Long encadrantId; // Id de l'encadrant récupéré via `User-Service`
+    private String etudiantNom;  // Nom de l'étudiant récupéré via `User-Service`
+
+    private String encadrantNom; // Nom de l'encadrant récupéré via `User-Service`
 
     private String nomEntreprise;
     public enum Statut {
         Disponible,Cloturé
     }
-
+    public enum TypeStage {
+        Stage_Immersion_En_Entreprise , StagePFE
+    }
+    /*@ElementCollection
+    private List<String> RapportPaths = new ArrayList<>();*/
 }
