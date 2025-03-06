@@ -15,22 +15,33 @@ import java.util.List;
 
 @Service
 @RequiredArgsConstructor
-public class StageServices implements IServicesStages{
-    private static final String uploadDir = "uploads/";
-
+public class StageServices implements IServicesStages {
     @Autowired
-    StageRepository stageRepository;
-    public List<Stage> getListOfStages() {return stageRepository.findAll();
+    private final StageRepository stageRepository;
+    @Override
+    public List<Stage> getListOfStages() {
+        return stageRepository.findAll();
     }
-    public Stage getStageByid(Long id) {
-        return stageRepository.findById(id).orElseThrow(() -> new RuntimeException("Stage non trouvé"));
-    }
+
+    @Override
     public Stage createStage(Stage stage) {
         return stageRepository.save(stage);
     }
+
+    @Override
+    public Stage updateStage(Stage stage) {
+        return stageRepository.save(stage);
+    }
+
+    @Override
     public void deleteStage(Long id) {
         stageRepository.deleteById(id);
     }
-    public Stage updateStage(Stage stage) {return stageRepository.save(stage);}
+
+    @Override
+    public Stage getStageByid(Long id) {
+        return stageRepository.findById(id).orElse(null);
+    }
+
 
 }

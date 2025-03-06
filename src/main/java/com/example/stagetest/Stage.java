@@ -33,12 +33,19 @@ public class Stage {
     private String encadrantNom; // Nom de l'encadrant récupéré via `User-Service`
 
     private String nomEntreprise;
-    public enum Statut {
-        Disponible,Cloturé
+    public enum Statut{
+        AVAILABLE, CLOSED
     }
-    public enum TypeStage {
-        Stage_Immersion_En_Entreprise , StagePFE
+
+    public enum TypeStage{
+        COMPANY_IMMERSION_INTERNSHIP, FINAL_YEAR_PROJECT
     }
-    /*@ElementCollection
-    private List<String> RapportPaths = new ArrayList<>();*/
+
+    @ElementCollection
+    @Enumerated(EnumType.STRING)
+    private List<Technologie> technologies = new ArrayList<>();
+    public enum Technologie {
+        JAVA, PYTHON, JAVASCRIPT, SPRING, ANGULAR , DOTNET,
+    }
+    private String description;
 }
