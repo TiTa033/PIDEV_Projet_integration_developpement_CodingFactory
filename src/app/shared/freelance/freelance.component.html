@@ -1,0 +1,41 @@
+<div class="freelance-container">
+  <!-- Bouton Ajouter Freelance -->
+  <button class="add-button" (click)="toggleForm()">
+    <i class="fa fa-plus"></i> Add New Freelance
+  </button>
+
+  <!-- Liste des freelances -->
+  <div class="freelance-list">
+    <div class="freelance-card" *ngFor="let freelance of freelances">
+      <div class="freelance-info">
+        <h3>{{ freelance.nom }}</h3>
+        <p>Email: {{ freelance.email }}</p>
+        <p>Hourly Rate: ${{ freelance.tarifHoraire }}</p>
+      </div>
+
+      <!-- Menu des actions -->
+      <div class="dropdown">
+        <button class="dropbtn">...</button>
+        <div class="dropdown-content">
+          <a href="#" (click)="editFreelance(freelance)">Edit</a>
+          <a href="#" (click)="deleteFreelance(freelance.id)">Delete</a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Formulaire d'ajout ou d'édition -->
+  <div *ngIf="isFormVisible" class="form-container">
+    <h3>{{ editingFreelance ? 'Edit Freelance' : 'Add New Freelance' }}</h3>
+    <form (ngSubmit)="addOrUpdateFreelance()">
+      <input [(ngModel)]="newFreelance.nom" name="nom" placeholder="Freelancer Name" required>
+      <input [(ngModel)]="newFreelance.email" name="email" placeholder="Email" required>
+      <input [(ngModel)]="newFreelance.tarifHoraire" name="tarifHoraire" placeholder="Hourly Rate" type="number" required>
+
+      <div class="form-buttons">
+        <button type="submit" class="submit-btn">{{ editingFreelance ? 'Save' : 'Add' }}</button>
+        <button type="button" class="cancel-btn" (click)="toggleForm()">Cancel</button>
+      </div>
+    </form>
+  </div>
+</div>

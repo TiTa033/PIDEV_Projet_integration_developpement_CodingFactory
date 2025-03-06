@@ -1,0 +1,36 @@
+<div class="container">
+  <!-- Affichage des publications -->
+  <div *ngFor="let publication of publications" class="publication-card">
+    <div class="publication-header">
+      <h3>{{ publication.titre }}</h3>
+      <!-- Trois points pour le menu déroulant -->
+      <div class="dropdown">
+        <button class="dropdown-btn">...</button>
+        <div class="dropdown-content">
+          <button (click)="editPublication(publication)">Edit</button>
+          <button (click)="deletePublication(publication.id)">Delete</button>
+        </div>
+      </div>
+    </div>
+    <p class="publication-content">{{ publication.contenue }}</p>
+    <div class="publication-footer">
+      <span class="date">Just now</span> <!-- Placeholder for time -->
+      <div class="interaction-buttons">
+        <button class="like-btn">Like</button>
+        <button class="comment-btn">Comment</button>
+        <button class="share-btn">Share</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Formulaire d'ajout ou modification -->
+  <div *ngIf="isFormVisible" class="form-container">
+    <input [(ngModel)]="newPublication.titre" placeholder="Title" />
+    <textarea [(ngModel)]="newPublication.contenue" placeholder="What's on your mind?"></textarea>
+    <button (click)="savePublication()">Save</button>
+    <button (click)="toggleFormVisibility()">Cancel</button>
+  </div>
+
+  <!-- Bouton d'ajout -->
+  <button class="add-btn" (click)="toggleFormVisibility()">Add Publication</button>
+</div>
