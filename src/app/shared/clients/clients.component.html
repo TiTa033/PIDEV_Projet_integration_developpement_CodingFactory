@@ -1,0 +1,20 @@
+<section class="section bg-client bg-light" id="client"
+    style="background-image: url(assets/images/bg.jpg);background-size: cover;">
+    <div class="container">
+        <h2>Evaluation</h2>      
+        <!-- Evaluation List -->
+        <div>
+          <h3>Listes des Evaluations</h3>
+          <table>
+            <tr>
+              <th>Sujet</th>
+              <th>Note</th>
+              <th>Date</th>
+            </tr>
+            <tr *ngFor="let evaluation of evaluations">
+              <td>{{ evaluation.sujet }}</td>
+              <td>{{ evaluation.note }}</td>
+              <td>{{ evaluation.dateEvaluation | date }}</td>
+            </tr>
+          </table>
+        </div>

@@ -1,0 +1,30 @@
+<div class="container">
+  <h2>Certification</h2>
+
+  <!-- Formulaire d'ajout -->
+  <div class="form-container">
+      <input type="text" placeholder="Nom" [(ngModel)]="newCertification.nom" />
+      <input type="text" placeholder="Organisme" [(ngModel)]="newCertification.organisme" />
+      <input type="date" [(ngModel)]="newCertification.dateObtention" />
+      <button (click)="addCertification()">Ajouter</button>
+  </div>
+
+  <!-- Liste des certifications -->
+  <ul>
+      <li *ngFor="let certification of certifications">
+          <span>{{ certification.nom }} - {{ certification.organisme }} - {{ certification.dateObtention }}</span>
+          <button (click)="editCertification(certification)">Modifier</button>
+          <button (click)="deleteCertification(certification.idCertification)">Supprimer</button>
+      </li>
+  </ul>
+
+  <!-- Formulaire de modification -->
+  <div *ngIf="editingCertification">
+      <h3>Modifier Certification</h3>
+      <input type="text" [(ngModel)]="editingCertification.nom" />
+      <input type="text" [(ngModel)]="editingCertification.organisme" />
+      <input type="date" [(ngModel)]="editingCertification.dateObtention" />
+      <button (click)="updateCertification()">Sauvegarder</button>
+      <button (click)="cancelEdit()">Annuler</button>
+  </div>
+</div>

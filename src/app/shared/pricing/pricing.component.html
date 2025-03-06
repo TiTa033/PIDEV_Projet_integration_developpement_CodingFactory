@@ -1,0 +1,21 @@
+<section class="section bg-light" id="price">
+    <div class="container">
+    <h2>Certifications</h2>      
+        <!-- Liste des Certifications -->
+        <div>
+          <h3>Liste des Certifications</h3>
+          <table>
+            <tr>
+              <th>Nom</th>
+              <th>Organisme</th>
+              <th>Date d'Obtention</th>
+            </tr>
+            <tr *ngFor="let certification of certifications">
+              <td>{{ certification.nom }}</td>
+              <td>{{ certification.organisme }}</td>
+              <td>{{ certification.dateObtention | date }}</td>
+            </tr>
+          </table>
+        </div>
+    </div>
+</section>

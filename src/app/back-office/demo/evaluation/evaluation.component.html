@@ -1,0 +1,67 @@
+<div class="container">
+    <h2>Evaluation</h2>
+  
+    <!-- Add New Evaluation -->
+    <div>
+      <h3>Add New Evaluation</h3>
+      <form (ngSubmit)="addEvaluation()">
+        <label>Sujet:</label>
+        <input type="text" [(ngModel)]="newEvaluation.sujet" name="sujet" required>
+        
+        <label>Note:</label>
+        <input type="number" [(ngModel)]="newEvaluation.note" name="note" min="0" required>
+  
+        <label>Date:</label>
+        <input type="date" [(ngModel)]="newEvaluation.dateEvaluation" name="dateEvaluation" required>
+  
+        <button type="submit">Add Evaluation</button>
+      </form>
+    </div>
+  
+    <hr>
+  
+    <!-- Evaluation List -->
+    <div>
+      <h3>List of Evaluations</h3>
+      <table>
+        <tr>
+          <th>ID</th>
+          <th>Sujet</th>
+          <th>Note</th>
+          <th>Date</th>
+          <th>Actions</th>
+        </tr>
+        <tr *ngFor="let evaluation of evaluations">
+          <td>{{ evaluation.idEvaluation }}</td>
+          <td>{{ evaluation.sujet }}</td>
+          <td>{{ evaluation.note }}</td>
+          <td>{{ evaluation.dateEvaluation | date }}</td>
+          <td>
+            <button (click)="editEvaluation(evaluation)">Edit</button>
+            <button (click)="deleteEvaluation(evaluation.idEvaluation)">Delete</button>
+          </td>
+        </tr>
+      </table>
+    </div>
+  
+    <hr>
+  
+    <!-- Edit Evaluation -->
+    <div *ngIf="editingEvaluation">
+      <h3>Edit Evaluation</h3>
+      <form (ngSubmit)="updateEvaluation()">
+        <label>Sujet:</label>
+        <input type="text" [(ngModel)]="editingEvaluation.sujet" name="sujet" required>
+  
+        <label>Note:</label>
+        <input type="number" [(ngModel)]="editingEvaluation.note" name="note" min="0" required>
+  
+        <label>Date:</label>
+        <input type="date" [(ngModel)]="editingEvaluation.dateEvaluation" name="dateEvaluation" required>
+  
+        <button type="submit">Update</button>
+        <button type="button" (click)="cancelEdit()">Cancel</button>
+      </form>
+    </div>
+  </div>
+  
