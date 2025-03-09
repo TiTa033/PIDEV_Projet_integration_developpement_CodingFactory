@@ -27,6 +27,27 @@ private certificationService = inject(CertificationService);
   getCertifications() {
     this.certificationService.getCertifications().subscribe((data) => {
       this.certifications = data;
+      
+      // Récupérer les QR Codes pour chaque certification
+      this.certifications.forEach(cert => {
+        if (cert.idCertification !== undefined) {
+          this.certificationService.getQrCode(cert.idCertification).subscribe(qrData => {
+            cert.qrCodeBase64 = 'data:image/png;base64,' + qrData;
+          });
+        }
+      });      
     });
-  }
+  }  
+
+  share(certification: Certification) {
+    const shareText = `Découvrez ma certification : ${certification.nom} obtenue chez ${certification.organisme}`;
+    const linkedInUrl = `https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(shareText)}`;
+    window.open(linkedInUrl, '_blank');
+  }  
+
+  download(certification: Certification) {
+    if (certification.idCertification) {
+      this.certificationService.downloadCertification(certification.idCertification);
+    }
+  }  
 }

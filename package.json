@@ -21,6 +21,7 @@
     "@angular/platform-browser-dynamic": "^18.2.9",
     "@angular/router": "^18.2.9",
     "@nicky-lenaers/ngx-scroll-to": "^14.0.0",
+    "@zxing/ngx-scanner": "^19.0.0",
     "apexcharts": "^4.5.0",
     "bootstrap": "5.3.3",
     "font-awesome": "^4.7.0",

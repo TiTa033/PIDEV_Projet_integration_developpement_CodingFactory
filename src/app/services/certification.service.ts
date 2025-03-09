@@ -30,4 +30,25 @@ export class CertificationService {
   deleteCertification(id: number): Observable<void> {
     return this.http.delete<void>(`${this.apiUrl}/remove-certification/${id}`);
   }
+
+  getQrCode(certificationId: number): Observable<string> {
+    return this.http.get(`http://localhost:8089/PIDEV/certification/generate-qrcode/${certificationId}`, { responseType: 'text' });
+  }
+
+  downloadCertification(id: number): void {
+    const url = `${this.apiUrl}/download-certification/${id}`;
+    this.http.get(url, { responseType: 'blob' }).subscribe(blob => {
+      const a = document.createElement('a');
+      const objectUrl = URL.createObjectURL(blob);
+      a.href = objectUrl;
+      a.download = `certification_${id}.pdf`;
+      a.click();
+      URL.revokeObjectURL(objectUrl);
+    });
+  }  
+  
+  verifyCertification(qrCodeBase64: string): Observable<string> {
+    const url = `${this.apiUrl}/validate-certification?qrCode=${qrCodeBase64}`;
+    return this.http.get<string>(url);
+  }
 }

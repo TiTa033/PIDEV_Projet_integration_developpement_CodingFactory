@@ -3,4 +3,5 @@ export interface Certification {
   nom: string;
   organisme: string;
   dateObtention: string; 
+  qrCodeBase64?: string;
 }

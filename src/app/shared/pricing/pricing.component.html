@@ -1,21 +1,26 @@
-<section class="section bg-light" id="price">
-    <div class="container">
-    <h2>Certifications</h2>      
-        <!-- Liste des Certifications -->
-        <div>
-          <h3>Liste des Certifications</h3>
-          <table>
-            <tr>
-              <th>Nom</th>
-              <th>Organisme</th>
-              <th>Date d'Obtention</th>
-            </tr>
-            <tr *ngFor="let certification of certifications">
-              <td>{{ certification.nom }}</td>
-              <td>{{ certification.organisme }}</td>
-              <td>{{ certification.dateObtention | date }}</td>
-            </tr>
-          </table>
+<section class="section bg-light" id="certifications">
+  <div class="container">
+    <h2 class="text-center text-2xl font-bold mb-6">Certifications</h2>
+    
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+      <div *ngFor="let certification of certifications" class="bg-white shadow-lg rounded-2xl p-4 transition transform hover:scale-105">
+        <h3 class="text-xl font-semibold">{{ certification.nom }}</h3>
+        <p class="text-gray-600">{{ certification.organisme }}</p>
+        <p class="text-gray-500 text-sm">Date : {{ certification.dateObtention | date }}</p>
+        
+        <div class="mt-4 flex justify-between items-center">
+          <!-- QR Code Placeholder -->
+          <img *ngIf="certification.qrCodeBase64" [src]="certification.qrCodeBase64" alt="QR Code" class="qr-code" />
+          <!-- Bouton de Partage -->
+          <button class="bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-700" (click)="share(certification)">
+            Partager
+          </button>
         </div>
+          <button class="bg-green-500 text-white px-4 py-2 rounded-lg hover:bg-green-700 mt-2" 
+          (click)="download(certification)">
+          Télécharger le certificat
+          </button>
+      </div>
     </div>
+  </div>
 </section>
