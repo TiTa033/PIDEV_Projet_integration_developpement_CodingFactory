@@ -9,12 +9,13 @@ import org.springframework.security.web.SecurityFilterChain;
 public class SecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-        HttpSecurity httpSecurity = http
-                .cors() // Active CORS
+        http
+                .cors() // Enable CORS
                 .and()
-                .csrf().disable() // Désactive CSRF si nécessaire
-                .authorizeHttpRequests(auth -> auth
-                        .anyRequest().permitAll()
-                );
+                .csrf().disable() // Disable CSRF if necessary
+                .authorizeRequests()
+                .anyRequest().permitAll(); // Allow all requests for now (you can refine this later)
+
         return http.build();
-    }}
+    }
+}

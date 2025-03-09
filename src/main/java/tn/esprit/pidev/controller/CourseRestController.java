@@ -1,6 +1,7 @@
 package tn.esprit.pidev.controller;
 
 
+import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -27,7 +28,7 @@ public class CourseRestController {
     }
 
     @PostMapping("/add-course")
-    public Course addCourse(@RequestBody Course course) {
+    public Course addCourse(@Valid @RequestBody Course course) {
         return courseService.addCourse(course);
     }
 
@@ -37,7 +38,7 @@ public class CourseRestController {
     }
 
     @PutMapping("/modify-course")
-    public Course modifyCourse(@RequestBody Course course) {
+    public Course modifyCourse(@Valid @RequestBody Course course) {
         return courseService.modifyCourse(course);
     }
 
@@ -46,4 +47,15 @@ public class CourseRestController {
         courseService.assignCertificationToCourse(courseId, certificationId);
         return ResponseEntity.ok("Certification assigned to course successfully");
     }*/
+
+    @PutMapping("/{courseId}/update-tags")
+    public Course updateCourseTags(@PathVariable Long courseId, @RequestBody List<String> newTags) {
+        return courseService.updateCourseTags(courseId, newTags);
+    }
+
+    @PutMapping("/rate-course/{course-id}/{rating}")
+    public ResponseEntity<Course> rateCourse(@PathVariable("course-id") Long courseId, @PathVariable("rating") int rating) {
+        return ResponseEntity.ok(courseService.rateCourse(courseId, rating));
+    }
+
 }

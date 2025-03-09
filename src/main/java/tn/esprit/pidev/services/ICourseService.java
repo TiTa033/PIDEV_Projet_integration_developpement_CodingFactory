@@ -11,4 +11,6 @@ public interface ICourseService {
     void removeCourse(Long courseId);
     Course modifyCourse(Course course);
     //void assignCertificationToCourse(Long courseId, Long certificationId);
+    Course updateCourseTags(Long courseId, List<String> newTags);
+    Course rateCourse(Long courseId, int rating);
 }
