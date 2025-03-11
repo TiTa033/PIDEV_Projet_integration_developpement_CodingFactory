@@ -4,8 +4,7 @@ import { Router, NavigationStart, NavigationEnd, NavigationCancel, NavigationErr
 import { SharedModule } from './demo/shared/shared.module';
 
 @Component({
-  selector: 'app-root',
-  imports: [SharedModule, RouterModule],
+  selector: 'app-root',  
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.scss']
 })

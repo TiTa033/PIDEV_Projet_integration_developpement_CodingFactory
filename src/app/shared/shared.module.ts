@@ -4,14 +4,14 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
 // Swiper
 import { SlickCarouselModule } from 'ngx-slick-carousel';
-
 // Counter
 import { CountUpModule } from 'ngx-countup';
-
-// bootstrap component
+// Bootstrap component
 import { ModalModule } from 'ngx-bootstrap/modal';
+// FullCalendar
+import { FullCalendarModule } from '@fullcalendar/angular'; 
 
-//Component
+// Component
 import { FeaturesComponent } from './features/features.component';
 import { ProcessComponent } from './process/process.component';
 import { ClientsComponent } from './clients/clients.component';
@@ -21,8 +21,6 @@ import { AboutComponent } from './about/about.component';
 import { CtaComponent } from './cta/cta.component';
 import { BlogComponent } from './blog/blog.component';
 import { ContactComponent } from './contact/contact.component';
-
-
 
 @NgModule({
   declarations: [
@@ -35,7 +33,6 @@ import { ContactComponent } from './contact/contact.component';
     CtaComponent,
     BlogComponent,
     ContactComponent
-
   ],
   imports: [
     CommonModule,
@@ -43,9 +40,10 @@ import { ContactComponent } from './contact/contact.component';
     SlickCarouselModule,
     CountUpModule,
     FormsModule, 
-    ReactiveFormsModule
+    ReactiveFormsModule,
+    FullCalendarModule 
   ],
-  exports:[
+  exports: [
     FeaturesComponent,
     ProcessComponent,
     ClientsComponent,
@@ -56,6 +54,5 @@ import { ContactComponent } from './contact/contact.component';
     BlogComponent,
     ContactComponent
   ]
-
 })
 export class SharedModule { }

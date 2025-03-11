@@ -1,25 +1,26 @@
-<section class="section bg-light" id="certifications">
-  <div class="container">
-    <h2 class="text-center text-2xl font-bold mb-6">Certifications</h2>
-    
-    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-      <div *ngFor="let certification of certifications" class="bg-white shadow-lg rounded-2xl p-4 transition transform hover:scale-105">
-        <h3 class="text-xl font-semibold">{{ certification.nom }}</h3>
-        <p class="text-gray-600">{{ certification.organisme }}</p>
-        <p class="text-gray-500 text-sm">Date : {{ certification.dateObtention | date }}</p>
-        
-        <div class="mt-4 flex justify-between items-center">
-          <!-- QR Code Placeholder -->
-          <img *ngIf="certification.qrCodeBase64" [src]="certification.qrCodeBase64" alt="QR Code" class="qr-code" />
-          <!-- Bouton de Partage -->
-          <button class="bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-700" (click)="share(certification)">
-            Partager
-          </button>
+<section class="section bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 py-20" id="price">
+  <div class="container mx-auto px-4">
+    <h2 class="text-center text-6xl font-extrabold text-white mb-16">Certifications</h2>
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-12">
+      <div *ngFor="let certification of certifications" class="certification-card">
+        <div class="card-header flex justify-between items-center mb-6">
+          <h3 class="text-2xl font-semibold text-gray-800 transition-all duration-500 hover:text-purple-200">{{ certification.nom }}</h3>
+          <p class="text-sm text-gray-500">{{ certification.organisme }}</p>
         </div>
-          <button class="bg-green-500 text-white px-4 py-2 rounded-lg hover:bg-green-700 mt-2" 
-          (click)="download(certification)">
-          Télécharger le certificat
-          </button>
+        <p class="text-sm text-gray-600 mb-4">Date : {{ certification.dateObtention | date }}</p>
+        <div class="card-body">
+          <div class="qr-code-container flex justify-center mb-6">
+            <img *ngIf="certification.qrCodeBase64" [src]="certification.qrCodeBase64" alt="QR Code" class="qr-code" />
+          </div>
+          <div class="card-actions flex justify-between items-center gap-4">
+            <button class="btn-share" (click)="share(certification)">
+              Partager
+            </button>
+            <button class="btn-download" (click)="download(certification)">
+              Télécharger le certificat
+            </button>
+          </div>
+        </div>
       </div>
     </div>
   </div>

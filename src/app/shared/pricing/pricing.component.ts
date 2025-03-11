@@ -26,8 +26,7 @@ private certificationService = inject(CertificationService);
 
   getCertifications() {
     this.certificationService.getCertifications().subscribe((data) => {
-      this.certifications = data;
-      
+      this.certifications = data;      
       // Récupérer les QR Codes pour chaque certification
       this.certifications.forEach(cert => {
         if (cert.idCertification !== undefined) {
