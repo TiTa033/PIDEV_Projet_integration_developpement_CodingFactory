@@ -3,5 +3,7 @@ export interface Evaluation {
     sujet: string;
     note: number;
     dateEvaluation: Date;
+    latitude: number;  // Add latitude property
+  longitude: number; 
   }
   

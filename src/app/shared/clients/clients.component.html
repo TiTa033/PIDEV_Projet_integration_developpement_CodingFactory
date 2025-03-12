@@ -1,5 +1,14 @@
 <section class="section bg-client bg-light" id="client">
   <div class="container">
+    <!-- FullCalendar -->
+    <full-calendar [options]="calendarOptions"></full-calendar>
+
+    <!-- Interactive Map -->
+    <div id="map-title">Carte interactive des lieux d'examen</div> 
+    <div id="map">
+      <leaflet [leafletOptions]="mapOptions" [leafletMarkers]="markers"></leaflet>
+    </div>
+
     <!-- Toggle Switch -->
     <div class="toggle-container">
       <label class="switch">
@@ -10,9 +19,6 @@
         {{ showFiltered ? 'Affichage des notes > 10' : 'Toutes les évaluations' }}
       </span>
     </div>
-    <h2>Evaluations</h2>
-    <!-- FullCalendar -->
-    <full-calendar [options]="calendarOptions"></full-calendar>
 
     <!-- Liste des évaluations -->
     <div class="evaluation-table">
@@ -30,13 +36,28 @@
             <td>{{ evaluation.sujet }}</td>
             <td>
               <span class="note-icon" [ngClass]="{'high-score': evaluation.note > 15, 'mid-score': evaluation.note > 10}">
-              {{ evaluation.note }}
+                {{ evaluation.note }}
               </span>
             </td>
             <td>{{ evaluation.dateEvaluation | date }}</td>
           </tr>
         </tbody>
       </table>
+    </div>
+
+    <!-- Detailed Modal for Evaluation -->
+    <div class="modal" *ngIf="selectedEvaluation" (click)="closeModal()">
+      <div class="modal-content" (click)="$event.stopPropagation()">
+        <div class="modal-header">
+          <h3>Détails de l’Évaluation</h3>
+          <button class="close-btn" (click)="closeModal()">×</button>
+        </div>
+        <div class="modal-body">
+          <p><strong>Sujet:</strong> {{ selectedEvaluation.sujet }}</p>
+          <p><strong>Note:</strong> {{ selectedEvaluation.note }}</p>
+          <p><strong>Date:</strong> {{ selectedEvaluation.dateEvaluation | date }}</p>
+        </div>
+      </div>
     </div>
   </div>
 </section>

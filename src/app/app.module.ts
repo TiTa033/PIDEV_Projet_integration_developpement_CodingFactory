@@ -33,11 +33,11 @@ import { TwilioService } from './services/twilio.service';
     BrowserAnimationsModule,
     FormsModule,
     RouterModule,
-    RegisterComponent,  // Standalone component
-    HeaderComponent,    // Ensure these components exist
+    RegisterComponent,  
+    HeaderComponent,   
     FooterComponent,
     ScrollToModule.forRoot(),
-    HttpClientModule // Ajoutez ceci ici pour résoudre l'erreur
+    HttpClientModule 
   ],
   providers: [TwilioService],
   bootstrap: [AppComponent]

@@ -43,7 +43,8 @@
               "src/assets/scss/style.scss",
               "src/styles.scss",
               "src/styles.css",
-              "src/app/back-office/@theme/styles/material-overrides.scss"
+              "src/app/back-office/@theme/styles/material-overrides.scss",
+              "node_modules/leaflet/dist/leaflet.css" 
             ],
             "scripts": [
               "node_modules/jquery/dist/jquery.min.js",

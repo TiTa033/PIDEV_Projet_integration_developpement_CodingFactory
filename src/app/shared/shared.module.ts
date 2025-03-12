@@ -1,4 +1,4 @@
-import { NgModule } from '@angular/core';
+import { NgModule, NO_ERRORS_SCHEMA } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
@@ -21,6 +21,7 @@ import { AboutComponent } from './about/about.component';
 import { CtaComponent } from './cta/cta.component';
 import { BlogComponent } from './blog/blog.component';
 import { ContactComponent } from './contact/contact.component';
+import { LeafletModule } from '@asymmetrik/ngx-leaflet';
 
 @NgModule({
   declarations: [
@@ -41,7 +42,8 @@ import { ContactComponent } from './contact/contact.component';
     CountUpModule,
     FormsModule, 
     ReactiveFormsModule,
-    FullCalendarModule 
+    FullCalendarModule,
+    LeafletModule
   ],
   exports: [
     FeaturesComponent,
@@ -53,6 +55,7 @@ import { ContactComponent } from './contact/contact.component';
     CtaComponent,
     BlogComponent,
     ContactComponent
-  ]
+  ],
+  schemas: [NO_ERRORS_SCHEMA]
 })
 export class SharedModule { }
