@@ -16,6 +16,4 @@ public interface ICertificationService {
     void removeCertification(Long certificationId);
     Certification modifyCertification(Certification certification);
     byte[] generateCertificationPDF(Long certificationId) throws IOException, WriterException;
-
-    boolean verifyCertification(String qrCodeBase64) throws IOException, ChecksumException, NotFoundException, FormatException;
 }

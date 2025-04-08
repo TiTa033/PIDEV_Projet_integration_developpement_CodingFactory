@@ -1,8 +1,6 @@
 package tn.esprit.pidev.services;
 
 import com.google.zxing.*;
-import com.google.zxing.client.j2se.BufferedImageLuminanceSource;
-import com.google.zxing.common.HybridBinarizer;
 import com.itextpdf.kernel.colors.ColorConstants;
 import com.itextpdf.kernel.font.PdfFontFactory;
 import com.itextpdf.kernel.pdf.canvas.PdfCanvas;
@@ -13,22 +11,18 @@ import org.springframework.stereotype.Service;
 import tn.esprit.pidev.entities.Certification;
 import tn.esprit.pidev.repository.CertificationRepository;
 
-import java.awt.image.BufferedImage;
-import java.io.ByteArrayInputStream;
 import java.util.List;
+
 import com.itextpdf.kernel.pdf.*;
 import com.itextpdf.layout.Document;
 import com.itextpdf.layout.element.Paragraph;
 import com.itextpdf.layout.element.Image;
 import com.itextpdf.io.image.ImageData;
 import com.itextpdf.io.image.ImageDataFactory;
+
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.Base64;
-
-import com.google.zxing.qrcode.QRCodeReader;
-
-import javax.imageio.ImageIO;
 
 @Service
 @AllArgsConstructor
@@ -50,8 +44,19 @@ public class CertificationService implements ICertificationService {
     @Override
     public Certification addCertification(Certification certification) {
         Certification savedCertification = certificationRepository.save(certification);
-
         try {
+            // Générer le QR code
+            String qrText = "Nom: " + certification.getNom() +
+                    "\nOrganisme: " + certification.getOrganisme() +
+                    "\nDate: " + certification.getDateObtention();
+            String qrCodeBase64 = QRCodeGenerator.generateQRCodeImage(qrText, 150, 150);
+
+            // Mettre à jour le champ qrCodeBase64 dans l'entité Certification
+            savedCertification.setQrCodeBase64(qrCodeBase64);
+
+            // Sauvegarder l'entité avec le QR code mis à jour
+            certificationRepository.save(savedCertification);
+
             // Générer le PDF du certificat
             byte[] pdfBytes = generateCertificationPDF(savedCertification.getIdCertification());
 
@@ -65,11 +70,9 @@ public class CertificationService implements ICertificationService {
                     pdfBytes,
                     "certification_" + savedCertification.getIdCertification() + ".pdf"
             );
-
         } catch (IOException | WriterException | MessagingException e) {
             e.printStackTrace();
         }
-
         return savedCertification;
     }
 
@@ -87,18 +90,15 @@ public class CertificationService implements ICertificationService {
     public byte[] generateCertificationPDF(Long certificationId) throws IOException, WriterException {
         Certification certification = certificationRepository.findById(certificationId)
                 .orElseThrow(() -> new RuntimeException("Certification non trouvée"));
-
         ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
         PdfWriter writer = new PdfWriter(outputStream);
         PdfDocument pdf = new PdfDocument(writer);
         Document document = new Document(pdf);
-
         // Ajouter les informations du certificat
         document.add(new Paragraph("Certification").setBold().setFontSize(18));
         document.add(new Paragraph("Nom : " + certification.getNom()));
         document.add(new Paragraph("Organisme : " + certification.getOrganisme()));
         document.add(new Paragraph("Date : " + certification.getDateObtention().toString()));
-
         // Générer le QR Code
         String qrText = "Nom: " + certification.getNom() +
                 "\nOrganisme: " + certification.getOrganisme() +
@@ -108,18 +108,15 @@ public class CertificationService implements ICertificationService {
         ImageData imageData = ImageDataFactory.create(qrCodeBytes);
         Image qrImage = new Image(imageData).setWidth(100).setHeight(100);
         document.add(qrImage);
-
         // Ajouter le filigrane sur chaque page
         for (int i = 1; i <= pdf.getNumberOfPages(); i++) {
             PdfPage page = pdf.getPage(i);
             PdfCanvas canvas = new PdfCanvas(page);
             canvas.saveState();
-
             // Définir la transparence
             PdfExtGState gs1 = new PdfExtGState();
             gs1.setFillOpacity(0.2f); // Transparence à 20%
             canvas.setExtGState(gs1);
-
             // Définir le texte du filigrane
             canvas.beginText()
                     .setFontAndSize(PdfFontFactory.createFont(), 50)
@@ -127,33 +124,9 @@ public class CertificationService implements ICertificationService {
                     .moveText(150, 400) // Position en diagonale
                     .showText("CERTIFICATION OFFICIELLE")
                     .endText();
-
             canvas.restoreState();
         }
-
         document.close();
         return outputStream.toByteArray();
-    }
-
-    public boolean verifyCertification(String qrCodeBase64) throws IOException, ChecksumException, NotFoundException, FormatException {
-        // Décoder le QR code de base64
-        byte[] qrCodeBytes = Base64.getDecoder().decode(qrCodeBase64);
-        ByteArrayInputStream bis = new ByteArrayInputStream(qrCodeBytes);
-        BufferedImage image = ImageIO.read(bis);
-
-        // Décode le QR Code
-        QRCodeReader qrCodeReader = new QRCodeReader();
-        BufferedImageLuminanceSource source = new BufferedImageLuminanceSource(image);
-        BinaryBitmap binaryBitmap = new BinaryBitmap(new HybridBinarizer(source));
-        Result result = qrCodeReader.decode(binaryBitmap);
-
-        String qrText = result.getText();
-
-        // Extraire l'ID de la certification (par exemple, sous forme de "id:nom:organisme")
-        String[] qrParts = qrText.split(":");
-        Long certificationId = Long.valueOf(qrParts[0]);
-
-        // Vérifier si le certificat existe dans la base de données
-        return certificationRepository.existsById(certificationId);
     }
 }

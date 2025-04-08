@@ -1,8 +1,4 @@
 package tn.esprit.pidev.controller;
-
-import com.google.zxing.ChecksumException;
-import com.google.zxing.FormatException;
-import com.google.zxing.NotFoundException;
 import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -23,12 +19,6 @@ import org.springframework.http.MediaType;
 public class CertificationRestController {
 
     private final ICertificationService certificationService;
-
-    private String generateQRCodeText(Certification certification) {
-        return "Nom: " + certification.getNom() +
-                "\nOrganisme: " + certification.getOrganisme() +
-                "\nDate: " + certification.getDateObtention();
-    }
 
     @GetMapping("/retrieve-all-certifications")
     public List<Certification> getCertifications() {
@@ -55,13 +45,18 @@ public class CertificationRestController {
         return certificationService.modifyCertification(certification);
     }
 
+    private String generateQRCodeText(Certification certification) {
+        return "Nom: " + certification.getNom() +
+                "\nOrganisme: " + certification.getOrganisme() +
+                "\nDate: " + certification.getDateObtention();
+    }
+
     @GetMapping("/generate-qrcode/{certification-id}")
     public ResponseEntity<String> generateQRCode(@PathVariable("certification-id") Long certificationId) {
         Certification certification = certificationService.retrieveCertification(certificationId);
         if (certification == null) {
             return ResponseEntity.notFound().build();
         }
-
         try {
             String qrCodeBase64 = QRCodeGenerator.generateQRCodeImage(generateQRCodeText(certification), 300, 300);
             return ResponseEntity.ok(qrCodeBase64);
@@ -74,21 +69,12 @@ public class CertificationRestController {
     public ResponseEntity<byte[]> downloadCertification(@PathVariable("certification-id") Long certificationId) {
         try {
             byte[] pdfBytes = certificationService.generateCertificationPDF(certificationId);
-
             HttpHeaders headers = new HttpHeaders();
             headers.setContentType(MediaType.APPLICATION_PDF);
             headers.setContentDispositionFormData("attachment", "certification_" + certificationId + ".pdf");
-
             return new ResponseEntity<>(pdfBytes, headers, HttpStatus.OK);
         } catch (Exception e) {
             return ResponseEntity.internalServerError().body(null);
         }
-    }
-
-    @GetMapping("/validate-certification")
-    public ResponseEntity<String> validateCertification(@RequestParam("qrCode") String qrCodeBase64) throws ChecksumException, NotFoundException, IOException, FormatException {
-        boolean isValid = certificationService.verifyCertification(qrCodeBase64);
-        return ResponseEntity.status(isValid ? HttpStatus.OK : HttpStatus.BAD_REQUEST)
-                .body(isValid ? "Certificat valide" : "Certificat invalide");
     }
 }

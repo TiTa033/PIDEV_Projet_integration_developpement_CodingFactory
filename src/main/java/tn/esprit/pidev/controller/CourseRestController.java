@@ -57,5 +57,4 @@ public class CourseRestController {
     public ResponseEntity<Course> rateCourse(@PathVariable("course-id") Long courseId, @PathVariable("rating") int rating) {
         return ResponseEntity.ok(courseService.rateCourse(courseId, rating));
     }
-
 }
