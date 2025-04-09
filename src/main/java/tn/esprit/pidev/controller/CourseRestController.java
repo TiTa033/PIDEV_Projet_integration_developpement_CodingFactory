@@ -1,13 +1,11 @@
 package tn.esprit.pidev.controller;
 
-
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import tn.esprit.pidev.entities.Course;
 import tn.esprit.pidev.services.ICourseService;
-
 import java.util.List;
 
 @CrossOrigin(origins = "http://localhost:4200")
@@ -41,12 +39,6 @@ public class CourseRestController {
     public Course modifyCourse(@Valid @RequestBody Course course) {
         return courseService.modifyCourse(course);
     }
-
-    /*@PostMapping("/{courseId}/assign-certification/{certificationId}")
-    public ResponseEntity<String> assignCertification(@PathVariable Long courseId, @PathVariable Long certificationId) {
-        courseService.assignCertificationToCourse(courseId, certificationId);
-        return ResponseEntity.ok("Certification assigned to course successfully");
-    }*/
 
     @PutMapping("/{courseId}/update-tags")
     public Course updateCourseTags(@PathVariable Long courseId, @RequestBody List<String> newTags) {

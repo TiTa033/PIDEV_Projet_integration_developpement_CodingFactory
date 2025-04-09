@@ -1,7 +1,6 @@
 package tn.esprit.pidev.services;
 
 import tn.esprit.pidev.entities.Course;
-
 import java.util.List;
 
 public interface ICourseService {
@@ -10,7 +9,6 @@ public interface ICourseService {
     Course addCourse(Course course);
     void removeCourse(Long courseId);
     Course modifyCourse(Course course);
-    //void assignCertificationToCourse(Long courseId, Long certificationId);
     Course updateCourseTags(Long courseId, List<String> newTags);
     Course rateCourse(Long courseId, int rating);
 }

@@ -1,12 +1,9 @@
 package tn.esprit.pidev.controller;
 
 import lombok.AllArgsConstructor;
-import lombok.RequiredArgsConstructor;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import tn.esprit.pidev.entities.Evaluation;
 import tn.esprit.pidev.services.IEvaluationService;
-
 import java.util.List;
 
 @CrossOrigin(origins = "http://localhost:4200")
@@ -41,10 +38,4 @@ public class EvaluationRestController {
     public Evaluation modifyEvaluation(@RequestBody Evaluation evaluation) {
         return evaluationService.modifyEvaluation(evaluation);
     }
-
-   /*@PostMapping("/addEvaluationToCourse/{courseId}")
-    public ResponseEntity<String> addEvaluation(@PathVariable Long courseId, @RequestBody Evaluation evaluation) {
-        evaluationService.addEvaluationToCourse(courseId, evaluation);
-        return ResponseEntity.ok("Evaluation added to course successfully");
-    }*/
 }

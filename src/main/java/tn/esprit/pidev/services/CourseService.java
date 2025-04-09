@@ -2,18 +2,14 @@ package tn.esprit.pidev.services;
 
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
-import tn.esprit.pidev.entities.Certification;
 import tn.esprit.pidev.entities.Course;
-import tn.esprit.pidev.repository.CertificationRepository;
 import tn.esprit.pidev.repository.CourseRepository;
-
 import java.util.List;
 
 @Service
 @AllArgsConstructor
 public class CourseService implements ICourseService {
     CourseRepository courseRepository;
-    //CertificationRepository certificationRepository;
 
     @Override
     public List<Course> retrieveAllCourses() {
@@ -64,12 +60,4 @@ public class CourseService implements ICourseService {
 
         return courseRepository.findById(courseId).orElseThrow(); // Return fresh course from DB
     }
-
-    /*public void assignCertificationToCourse(Long courseId, Long certificationId) {
-        Course course = courseRepository.findById(courseId).orElseThrow(() -> new RuntimeException("Course not found"));
-        Certification certification = certificationRepository.findById(certificationId).orElseThrow(() -> new RuntimeException("Certification not found"));
-
-        course.getCertifications().add(certification);
-        courseRepository.save(course);
-    }*/
 }

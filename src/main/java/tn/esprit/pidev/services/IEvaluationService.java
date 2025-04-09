@@ -9,5 +9,4 @@ public interface IEvaluationService {
     Evaluation addEvaluation(Evaluation evaluation);
     void removeEvaluation(Long evaluationId);
     Evaluation modifyEvaluation(Evaluation evaluation);
-    //void addEvaluationToCourse(Long courseId, Evaluation evaluation);
 }

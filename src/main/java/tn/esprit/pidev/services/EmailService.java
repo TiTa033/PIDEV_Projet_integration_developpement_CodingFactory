@@ -7,7 +7,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;
-
 import java.io.ByteArrayInputStream;
 import java.nio.charset.StandardCharsets;
 
