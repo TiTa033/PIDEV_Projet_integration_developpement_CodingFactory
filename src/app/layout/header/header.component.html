@@ -1,0 +1,49 @@
+<!-- START NAVBAR -->
+<nav id="navbar" class="navbar navbar-expand-lg fixed-top sticky" (window:scroll)="windoscroll()">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <img src="assets/images/logo-dark.png" alt="" height="100">
+    </a>
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
+      data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false"
+      (click)="toggleMenu()" aria-label="Toggle navigation">
+      <i class="mdi mdi-menu text-muted"></i>
+    </button>
+
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ms-auto mb-2 mb-lg-0" id="navbar-navList">
+        <li class="nav-item">
+          <a [ngxScrollTo]="'#home'" class="nav-link" [ngClass]="{'active':curentsection === 'home'}" href="javascript:void(0);">Home</a>
+        </li>
+        <li class="nav-item">
+          <a [ngxScrollTo]="'#features'" class="nav-link" [ngClass]="{'active':curentsection === 'features'}" href="javascript:void(0);">Features</a>
+        </li>
+        <li class="nav-item">
+          <a [ngxScrollTo]="'#contact'" class="nav-link" [ngClass]="{'active':curentsection === 'contact'}" href="javascript:void(0);">Contact</a>
+        </li>
+      </ul>
+
+      <!-- Profile & Username Section -->
+      <div *ngIf="isAuthenticated()" class="d-flex align-items-center ms-3">
+        <!-- ✅ Display Profile Image -->
+        <img *ngIf="profileImage" [src]="'http://localhost:8082/uploads/' + profileImage" 
+             alt="Profile" class="rounded-circle me-2" width="40" height="40">
+        
+        <!-- ✅ Display Username -->
+        <span class="me-2 text-primary"><i class="mdi mdi-account"></i> {{ username }}</span>
+
+        <!-- ✅ Profile Button -->
+        <button [routerLink]="['/profile']" type="button" class="btn btn-outline-primary">
+          <i class="mdi mdi-account-circle"></i> Profile
+        </button>
+      </div>
+
+      <!-- Auth Buttons -->
+      <div class="ms-3">
+        <button *ngIf="isAuthenticated()" class="btn btn-danger" (click)="logout()">Logout</button>
+        <button *ngIf="!isAuthenticated()" class="btn btn-primary" [routerLink]="['/login']">Login</button>
+      </div>
+    </div>
+  </div>
+</nav>
+<!-- END NAVBAR -->

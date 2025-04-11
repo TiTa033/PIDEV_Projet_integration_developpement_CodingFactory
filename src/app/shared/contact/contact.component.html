@@ -1,0 +1,51 @@
+<form (ngSubmit)="sendMsg()" [formGroup]="contactForm" class="contact-form">
+    <div *ngIf="errorMessage" class="alert alert-danger">{{ errorMessage }}</div>
+    <div *ngIf="successMessage" class="alert alert-success">{{ successMessage }}</div>
+
+    <div class="row">
+        <div class="col-lg-6">
+            <div class="position-relative mb-3">
+                <span class="input-group-text"><i class="mdi mdi-account-outline"></i></span>
+                <input type="text" class="form-control" formControlName="name" placeholder="Enter your name*">
+            </div>
+        </div>
+
+        <div class="col-lg-6">
+            <div class="position-relative mb-3">
+                <span class="input-group-text"><i class="mdi mdi-email-outline"></i></span>
+                <input type="email" class="form-control" formControlName="email" placeholder="Enter your email*">
+            </div>
+        </div>
+
+        <div class="col-lg-6">
+            <div class="position-relative mb-3">
+                <span class="input-group-text"><i class="mdi mdi-calendar"></i></span>
+                <input type="date" class="form-control" formControlName="dateDeNaissance" placeholder="Date of Birth*">
+            </div>
+        </div>
+
+        <div class="col-lg-6">
+            <div class="position-relative mb-3">
+                <span class="input-group-text"><i class="mdi mdi-file-document-outline"></i></span>
+                <select class="form-control" formControlName="specialite">
+                    <option value="" disabled>Select your specialty*</option>
+                    <option *ngFor="let spec of specialites" [value]="spec">{{ spec }}</option>
+                </select>
+            </div>
+        </div>
+
+        <input type="file" class="form-control" (change)="onFileSelected($event)">
+
+
+        
+    </div>
+
+    <div class="row">
+        <div class="col-sm-12 text-end">
+            <button type="submit" class="btn btn-primary" contactForm.invalid>
+                Submit 
+            </button>
+            
+        </div>
+    </div>
+</form>
