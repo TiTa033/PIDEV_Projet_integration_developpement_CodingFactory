@@ -12,30 +12,35 @@ import java.util.List;
 @RequestMapping("/evaluation")
 public class EvaluationRestController {
 
-    IEvaluationService evaluationService;
+  IEvaluationService evaluationService;
 
-    @GetMapping("/retrieve-all-evaluations")
-    public List<Evaluation> getEvaluations() {
-        return evaluationService.retrieveAllEvaluations();
-    }
+  @GetMapping("/retrieve-all-evaluations")
+  public List<Evaluation> getEvaluations() {
+    return evaluationService.retrieveAllEvaluations();
+  }
 
-    @GetMapping("/retrieve-evaluation/{evaluation-id}")
-    public Evaluation retrieveEvaluation(@PathVariable("evaluation-id") Long evaluationId) {
-        return evaluationService.retrieveEvaluation(evaluationId);
-    }
+  @GetMapping("/retrieve-evaluation/{evaluation-id}")
+  public Evaluation retrieveEvaluation(@PathVariable("evaluation-id") Long evaluationId) {
+    return evaluationService.retrieveEvaluation(evaluationId);
+  }
 
-    @PostMapping("/add-evaluation")
-    public Evaluation addEvaluation(@RequestBody Evaluation evaluation) {
-        return evaluationService.addEvaluation(evaluation);
-    }
+  @PostMapping("/add-evaluation")
+  public Evaluation addEvaluation(@RequestBody Evaluation evaluation) {
+    return evaluationService.addEvaluation(evaluation);
+  }
 
-    @DeleteMapping("/remove-evaluation/{evaluation-id}")
-    public void removeEvaluation(@PathVariable("evaluation-id") Long evaluationId) {
-        evaluationService.removeEvaluation(evaluationId);
-    }
+  @DeleteMapping("/remove-evaluation/{evaluation-id}")
+  public void removeEvaluation(@PathVariable("evaluation-id") Long evaluationId) {
+    evaluationService.removeEvaluation(evaluationId);
+  }
 
-    @PutMapping("/modify-evaluation")
-    public Evaluation modifyEvaluation(@RequestBody Evaluation evaluation) {
-        return evaluationService.modifyEvaluation(evaluation);
-    }
+  @PutMapping("/modify-evaluation")
+  public Evaluation modifyEvaluation(@RequestBody Evaluation evaluation) {
+    return evaluationService.modifyEvaluation(evaluation);
+  }
+
+  @GetMapping("/upcoming-evaluations")
+  public List<Evaluation> getUpcomingEvaluations() {
+    return evaluationService.getUpcomingEvaluations();
+  }
 }
