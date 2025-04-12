@@ -10,4 +10,5 @@ public interface IEvaluationService {
   void removeEvaluation(Long evaluationId);
   Evaluation modifyEvaluation(Evaluation evaluation);
   List<Evaluation> getUpcomingEvaluations();
+  List<Evaluation> getCompletedEvaluations();
 }

@@ -6,5 +6,6 @@ import java.util.Date;
 import java.util.List;
 
 public interface EvaluationRepository extends JpaRepository<Evaluation, Long> {
-  List<Evaluation> findByDateEvaluationAfterOrderByDateEvaluationAsc(Date date);
+  List<Evaluation> findByDateEvaluationAfterAndNoteIsNullOrderByDateEvaluationAsc(Date today);
+  List<Evaluation> findByDateEvaluationBeforeOrNoteIsNotNullOrderByDateEvaluationDesc(Date today);
 }

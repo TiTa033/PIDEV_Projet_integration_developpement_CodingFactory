@@ -13,7 +13,7 @@ import java.util.List;
 public class EvaluationService implements IEvaluationService {
 
   EvaluationRepository evaluationRepository;
-  CertificationService certificationService; // Add this
+  CertificationService certificationService;
 
   @Override
   public List<Evaluation> retrieveAllEvaluations() {
@@ -27,14 +27,20 @@ public class EvaluationService implements IEvaluationService {
 
   @Override
   public Evaluation addEvaluation(Evaluation evaluation) {
-    Evaluation savedEvaluation = evaluationRepository.save(evaluation);
-
-    // Check if note is greater than 15
-    if (evaluation.getNote() != null && evaluation.getNote() > 15) {
-      createCertificationForEvaluation(savedEvaluation);
+    // Prevent adding evaluations with future dates and notes
+    if (evaluation.getNote() != null && evaluation.getDateEvaluation().after(new Date())) {
+      throw new IllegalArgumentException("Cannot add evaluation with future date and existing note");
     }
+    return evaluationRepository.save(evaluation);
+  }
 
-    return savedEvaluation;
+  @Override
+  public Evaluation modifyEvaluation(Evaluation evaluation) {
+    // Prevent modifying evaluations to have future dates with notes
+    if (evaluation.getNote() != null && evaluation.getDateEvaluation().after(new Date())) {
+      throw new IllegalArgumentException("Cannot have evaluation with future date and existing note");
+    }
+    return evaluationRepository.save(evaluation);
   }
 
   @Override
@@ -43,20 +49,15 @@ public class EvaluationService implements IEvaluationService {
   }
 
   @Override
-  public Evaluation modifyEvaluation(Evaluation evaluation) {
-    Evaluation updatedEvaluation = evaluationRepository.save(evaluation);
-
-    // Check if note is greater than 15
-    if (evaluation.getNote() != null && evaluation.getNote() > 15) {
-      createCertificationForEvaluation(updatedEvaluation);
-    }
-
-    return updatedEvaluation;
-  }
-
   public List<Evaluation> getUpcomingEvaluations() {
     Date today = new Date();
-    return evaluationRepository.findByDateEvaluationAfterOrderByDateEvaluationAsc(today);
+    return evaluationRepository.findByDateEvaluationAfterAndNoteIsNullOrderByDateEvaluationAsc(today);
+  }
+
+  @Override
+  public List<Evaluation> getCompletedEvaluations() {
+    Date today = new Date();
+    return evaluationRepository.findByDateEvaluationBeforeOrNoteIsNotNullOrderByDateEvaluationDesc(today);
   }
 
   private void createCertificationForEvaluation(Evaluation evaluation) {

@@ -43,4 +43,9 @@ public class EvaluationRestController {
   public List<Evaluation> getUpcomingEvaluations() {
     return evaluationService.getUpcomingEvaluations();
   }
+
+  @GetMapping("/completed-evaluations")
+  public List<Evaluation> getCompletedEvaluations() {
+    return evaluationService.getCompletedEvaluations();
+  }
 }

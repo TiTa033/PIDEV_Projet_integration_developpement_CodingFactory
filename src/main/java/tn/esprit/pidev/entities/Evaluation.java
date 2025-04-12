@@ -20,7 +20,7 @@ public class Evaluation {
   @Size(min = 5, message = "Le sujet doit contenir au moins 5 caractères")
   private String sujet;
 
-  @NotNull(message = "La note est obligatoire")
+  @Column(nullable = true)
   @Min(value = 0, message = "La note doit être au minimum 0")
   @Max(value = 20, message = "La note doit être au maximum 20")
   private Double note;
