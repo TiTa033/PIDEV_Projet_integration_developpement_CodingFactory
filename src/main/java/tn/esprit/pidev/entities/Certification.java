@@ -26,9 +26,10 @@ public class Certification {
     private String organisme;
 
     @NotNull(message = "La date d'obtention est obligatoire")
+    @Column(columnDefinition = "TIMESTAMP")
     private Date dateObtention;
 
-    @Column(columnDefinition = "TEXT")
+  @Column(columnDefinition = "TEXT")
     private String qrCodeBase64;
 
     @Lob

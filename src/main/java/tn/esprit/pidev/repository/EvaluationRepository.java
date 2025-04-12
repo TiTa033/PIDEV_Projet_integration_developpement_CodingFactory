@@ -8,4 +8,5 @@ import java.util.List;
 public interface EvaluationRepository extends JpaRepository<Evaluation, Long> {
   List<Evaluation> findByDateEvaluationAfterAndNoteIsNullOrderByDateEvaluationAsc(Date today);
   List<Evaluation> findByDateEvaluationBeforeOrNoteIsNotNullOrderByDateEvaluationDesc(Date today);
+  List<Evaluation> findByNoteGreaterThanEqualAndDateEvaluationBefore(Double note, Date date);
 }

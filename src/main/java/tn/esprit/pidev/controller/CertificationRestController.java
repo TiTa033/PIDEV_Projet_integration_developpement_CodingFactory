@@ -133,7 +133,6 @@ public class CertificationRestController {
         }
     }
 
-    // Méthode pour extraire et normaliser la date à partir du texte extrait
     private String extractDateFromText(String text) {
         // Recherche de la date au format ddMMyyyy dans le texte
         String datePattern = "\\d{2}\\d{2}\\d{4}"; // Format ddMMyyyy

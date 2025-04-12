@@ -31,7 +31,11 @@ public class EvaluationService implements IEvaluationService {
     if (evaluation.getNote() != null && evaluation.getDateEvaluation().after(new Date())) {
       throw new IllegalArgumentException("Cannot add evaluation with future date and existing note");
     }
-    return evaluationRepository.save(evaluation);
+
+    Evaluation savedEvaluation = evaluationRepository.save(evaluation);
+    checkAndCreateCertification(savedEvaluation);
+
+    return savedEvaluation;
   }
 
   @Override
@@ -40,7 +44,11 @@ public class EvaluationService implements IEvaluationService {
     if (evaluation.getNote() != null && evaluation.getDateEvaluation().after(new Date())) {
       throw new IllegalArgumentException("Cannot have evaluation with future date and existing note");
     }
-    return evaluationRepository.save(evaluation);
+
+    Evaluation updatedEvaluation = evaluationRepository.save(evaluation);
+    checkAndCreateCertification(updatedEvaluation);
+
+    return updatedEvaluation;
   }
 
   @Override
@@ -60,9 +68,19 @@ public class EvaluationService implements IEvaluationService {
     return evaluationRepository.findByDateEvaluationBeforeOrNoteIsNotNullOrderByDateEvaluationDesc(today);
   }
 
+  void checkAndCreateCertification(Evaluation evaluation) {
+
+    if (evaluation.getNote() != null &&
+      !evaluation.getDateEvaluation().after(new Date()) &&
+      evaluation.getNote() >= 15.0) {
+
+      createCertificationForEvaluation(evaluation);
+    }
+  }
+
   private void createCertificationForEvaluation(Evaluation evaluation) {
     Certification certification = new Certification();
-    certification.setNom("Certification Spring Backend - " + evaluation.getSujet());
+    certification.setNom("Certification pour: " + evaluation.getSujet());
     certification.setOrganisme("Pidev");
     certification.setDateObtention(new Date());
     certificationService.addCertification(certification);

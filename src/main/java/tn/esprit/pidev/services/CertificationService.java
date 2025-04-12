@@ -41,40 +41,46 @@ public class CertificationService implements ICertificationService {
         return certificationRepository.findById(certificationId).orElse(null);
     }
 
-    @Override
-    public Certification addCertification(Certification certification) {
-        Certification savedCertification = certificationRepository.save(certification);
-        try {
-            // Générer le QR code
-            String qrText = "Nom: " + certification.getNom() +
-                    "\nOrganisme: " + certification.getOrganisme() +
-                    "\nDate: " + certification.getDateObtention();
-            String qrCodeBase64 = QRCodeGenerator.generateQRCodeImage(qrText, 150, 150);
+  @Override
+  public Certification addCertification(Certification certification) {
 
-            // Mettre à jour le champ qrCodeBase64 dans l'entité Certification
-            savedCertification.setQrCodeBase64(qrCodeBase64);
+    List<Certification> existing = certificationRepository.findByNomAndOrganismeAndDateObtention(
+      certification.getNom(),
+      certification.getOrganisme(),
+      certification.getDateObtention()
+    );
 
-            // Sauvegarder l'entité avec le QR code mis à jour
-            certificationRepository.save(savedCertification);
-
-            // Générer le PDF du certificat
-            byte[] pdfBytes = generateCertificationPDF(savedCertification.getIdCertification());
-
-            // Envoi de l'email avec le certificat en pièce jointe
-            String subject = "Votre Certification " + savedCertification.getNom();
-            String text = "<p>Félicitations,</p><p>Vous avez obtenu la certification : <b>" + savedCertification.getNom() + "</b>.</p>";
-            emailService.sendCertificationEmail(
-                    "malekbenslama0@gmail.com",
-                    subject,
-                    text,
-                    pdfBytes,
-                    "certification_" + savedCertification.getIdCertification() + ".pdf"
-            );
-        } catch (IOException | WriterException | MessagingException e) {
-            e.printStackTrace();
-        }
-        return savedCertification;
+    if (!existing.isEmpty()) {
+      return existing.get(0);
     }
+
+    Certification savedCertification = certificationRepository.save(certification);
+    try {
+      // Générer le QR code
+      String qrText = "Nom: " + certification.getNom() +
+        "\nOrganisme: " + certification.getOrganisme() +
+        "\nDate: " + certification.getDateObtention();
+      String qrCodeBase64 = QRCodeGenerator.generateQRCodeImage(qrText, 150, 150);
+
+      savedCertification.setQrCodeBase64(qrCodeBase64);
+      certificationRepository.save(savedCertification);
+
+      byte[] pdfBytes = generateCertificationPDF(savedCertification.getIdCertification());
+
+      String subject = "Votre Certification " + savedCertification.getNom();
+      String text = "<p>Félicitations,</p><p>Vous avez obtenu la certification : <b>" + savedCertification.getNom() + "</b>.</p>";
+      emailService.sendCertificationEmail(
+        "malekbenslama0@gmail.com",
+        subject,
+        text,
+        pdfBytes,
+        "certification_" + savedCertification.getIdCertification() + ".pdf"
+      );
+    } catch (IOException | WriterException | MessagingException e) {
+      e.printStackTrace();
+    }
+    return savedCertification;
+  }
 
     @Override
     public void removeCertification(Long certificationId) {
