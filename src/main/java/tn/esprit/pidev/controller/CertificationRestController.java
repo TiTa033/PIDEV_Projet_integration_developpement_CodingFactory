@@ -57,19 +57,23 @@ public class CertificationRestController {
                 "\nDate: " + certification.getDateObtention();
     }
 
-    @GetMapping("/generate-qrcode/{certification-id}")
-    public ResponseEntity<String> generateQRCode(@PathVariable("certification-id") Long certificationId) {
-        Certification certification = certificationService.retrieveCertification(certificationId);
-        if (certification == null) {
-            return ResponseEntity.notFound().build();
-        }
-        try {
-            String qrCodeBase64 = QRCodeGenerator.generateQRCodeImage(generateQRCodeText(certification), 300, 300);
-            return ResponseEntity.ok(qrCodeBase64);
-        } catch (WriterException | IOException e) {
-            return ResponseEntity.internalServerError().body("Erreur de génération du QR Code");
-        }
+  @GetMapping("/generate-qrcode/{certification-id}")
+  public ResponseEntity<String> generateQRCode(@PathVariable("certification-id") Long certificationId) {
+    Certification certification = certificationService.retrieveCertification(certificationId);
+    if (certification == null) return ResponseEntity.notFound().build();
+
+    try {
+      boolean isExpired = certificationService.isCertificationExpired(certification);
+      int qrColor = isExpired ? 0xFFFF0000 : 0xFF00FF00;
+
+      String qrCodeBase64 = QRCodeGenerator.generateQRCodeImage(
+        generateQRCodeText(certification), 300, 300, qrColor, 0xFFFFFFFF
+      );
+      return ResponseEntity.ok(qrCodeBase64);
+    } catch (WriterException | IOException e) {
+      return ResponseEntity.internalServerError().body("Erreur de génération du QR Code");
     }
+  }
 
     @GetMapping("/download-certification/{certification-id}")
     public ResponseEntity<byte[]> downloadCertification(@PathVariable("certification-id") Long certificationId) {

@@ -12,4 +12,5 @@ public interface ICertificationService {
     void removeCertification(Long certificationId);
     Certification modifyCertification(Certification certification);
     byte[] generateCertificationPDF(Long certificationId) throws IOException, WriterException;
+    boolean isCertificationExpired(Certification certification);
 }
