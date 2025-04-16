@@ -9,19 +9,29 @@ import java.io.File;
 
 @Service
 public class OcrService {
+  public String extractTextFromImage(MultipartFile file) throws Exception {
+    File tempFile = File.createTempFile("certif", file.getOriginalFilename());
+    file.transferTo(tempFile);
 
-    public String extractTextFromImage(MultipartFile file) throws Exception {
-        File tempFile = File.createTempFile("certif", file.getOriginalFilename());
-        file.transferTo(tempFile);
+    ITesseract instance = new Tesseract();
+    instance.setDatapath(new ClassPathResource("tessdata").getFile().getAbsolutePath());
+    instance.setLanguage("fra+eng"); // Support multilingue
+    instance.setTessVariable("user_defined_dpi", "300"); // Meilleure qualité pour les PDF
+    instance.setPageSegMode(6); // Mode segmention automatique avec OSD
+    instance.setOcrEngineMode(3); // Mode LSTM seulement
 
-        ITesseract instance = new Tesseract();
-        // chemin vers le dossier tessdata dans resources
-        File tessDataFolder = new ClassPathResource("tessdata").getFile();
-        instance.setDatapath(tessDataFolder.getAbsolutePath());
-        instance.setLanguage("fra");
+    String result = instance.doOCR(tempFile);
+    tempFile.delete();
 
-        String result = instance.doOCR(tempFile);
-        tempFile.delete();
-        return result;
-    }
+    // Nettoyage supplémentaire du texte
+    return cleanText(result);
+  }
+
+  private String cleanText(String text) {
+    // Normalisation plus poussée
+    return text.replaceAll("[^a-zA-Z0-9\\sàâäéèêëîïôöùûüçÀÂÄÉÈÊËÎÏÔÖÙÛÜÇ]", " ")
+      .replaceAll("\\s+", " ")
+      .trim()
+      .toLowerCase();
+  }
 }

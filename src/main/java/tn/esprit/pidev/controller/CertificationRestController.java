@@ -8,9 +8,11 @@ import tn.esprit.pidev.services.ICertificationService;
 import tn.esprit.pidev.services.QRCodeGenerator;
 import com.google.zxing.WriterException;
 import java.io.IOException;
+import java.time.LocalDate;
+import java.time.ZoneId;
+import java.util.Date;
 import java.util.List;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
+
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -23,39 +25,39 @@ import tn.esprit.pidev.services.OcrService;
 @RequestMapping("/certification")
 public class CertificationRestController {
 
-    private final ICertificationService certificationService;
-    private final OcrService ocrService;
+  private final ICertificationService certificationService;
+  private final OcrService ocrService;
 
-    @GetMapping("/retrieve-all-certifications")
-    public List<Certification> getCertifications() {
-        return certificationService.retrieveAllCertifications();
-    }
+  @GetMapping("/retrieve-all-certifications")
+  public List<Certification> getCertifications() {
+    return certificationService.retrieveAllCertifications();
+  }
 
-    @GetMapping("/retrieve-certification/{certification-id}")
-    public Certification retrieveCertification(@PathVariable("certification-id") Long certificationId) {
-        return certificationService.retrieveCertification(certificationId);
-    }
+  @GetMapping("/retrieve-certification/{certification-id}")
+  public Certification retrieveCertification(@PathVariable("certification-id") Long certificationId) {
+    return certificationService.retrieveCertification(certificationId);
+  }
 
-    @PostMapping("/add-certification")
-    public Certification addCertification(@RequestBody Certification certification) {
-        return certificationService.addCertification(certification);
-    }
+  @PostMapping("/add-certification")
+  public Certification addCertification(@RequestBody Certification certification) {
+    return certificationService.addCertification(certification);
+  }
 
-    @DeleteMapping("/remove-certification/{certification-id}")
-    public void removeCertification(@PathVariable("certification-id") Long certificationId) {
-        certificationService.removeCertification(certificationId);
-    }
+  @DeleteMapping("/remove-certification/{certification-id}")
+  public void removeCertification(@PathVariable("certification-id") Long certificationId) {
+    certificationService.removeCertification(certificationId);
+  }
 
-    @PutMapping("/modify-certification")
-    public Certification modifyCertification(@RequestBody Certification certification) {
-        return certificationService.modifyCertification(certification);
-    }
+  @PutMapping("/modify-certification")
+  public Certification modifyCertification(@RequestBody Certification certification) {
+    return certificationService.modifyCertification(certification);
+  }
 
-    private String generateQRCodeText(Certification certification) {
-        return "Nom: " + certification.getNom() +
-                "\nOrganisme: " + certification.getOrganisme() +
-                "\nDate: " + certification.getDateObtention();
-    }
+  private String generateQRCodeText(Certification certification) {
+    return "Nom: " + certification.getNom() +
+      "\nOrganisme: " + certification.getOrganisme() +
+      "\nDate: " + certification.getDateObtention();
+  }
 
   @GetMapping("/generate-qrcode/{certification-id}")
   public ResponseEntity<String> generateQRCode(@PathVariable("certification-id") Long certificationId) {
@@ -75,80 +77,122 @@ public class CertificationRestController {
     }
   }
 
-    @GetMapping("/download-certification/{certification-id}")
-    public ResponseEntity<byte[]> downloadCertification(@PathVariable("certification-id") Long certificationId) {
-        try {
-            byte[] pdfBytes = certificationService.generateCertificationPDF(certificationId);
-            HttpHeaders headers = new HttpHeaders();
-            headers.setContentType(MediaType.APPLICATION_PDF);
-            headers.setContentDispositionFormData("attachment", "certification_" + certificationId + ".pdf");
-            return new ResponseEntity<>(pdfBytes, headers, HttpStatus.OK);
-        } catch (Exception e) {
-            return ResponseEntity.internalServerError().body(null);
+  @GetMapping("/download-certification/{certification-id}")
+  public ResponseEntity<byte[]> downloadCertification(@PathVariable("certification-id") Long certificationId) {
+    try {
+      byte[] pdfBytes = certificationService.generateCertificationPDF(certificationId);
+      HttpHeaders headers = new HttpHeaders();
+      headers.setContentType(MediaType.APPLICATION_PDF);
+      headers.setContentDispositionFormData("attachment", "certification_" + certificationId + ".pdf");
+      return new ResponseEntity<>(pdfBytes, headers, HttpStatus.OK);
+    } catch (Exception e) {
+      return ResponseEntity.internalServerError().body(null);
+    }
+  }
+
+  @PostMapping("/verify-certification-image")
+  public ResponseEntity<String> verifyCertificationFromImage(@RequestParam("image") MultipartFile imageFile) {
+    try {
+      String extractedText = ocrService.extractTextFromImage(imageFile);
+      System.out.println("=== DEBUT VERIFICATION ===");
+      System.out.println("Texte extrait nettoyé: " + extractedText);
+
+      List<Certification> certifications = certificationService.retrieveAllCertifications();
+      System.out.println("Nombre de certifications à vérifier: " + certifications.size());
+
+      for (Certification certif : certifications) {
+        System.out.println("\n--- Vérification certification ---");
+        System.out.println("ID Certification: " + certif.getIdCertification());
+
+        // Préparation des données à comparer
+        String nomPattern = prepareForMatching(certif.getNom());
+        String organismePattern = prepareForMatching(certif.getOrganisme());
+        String datePattern = prepareDateForMatching(certif.getDateObtention());
+
+        System.out.println("Nom certification: " + certif.getNom());
+        System.out.println("Pattern nom: " + nomPattern);
+        System.out.println("Pattern organisme: " + organismePattern);
+        System.out.println("Pattern date: " + datePattern);
+
+        // Vérification avec tolérance
+        boolean nomMatch = containsWithTolerance(extractedText, nomPattern);
+        boolean organismeMatch = containsWithTolerance(extractedText, organismePattern);
+        boolean dateMatch = containsDate(extractedText, datePattern);
+
+        System.out.println("Correspondance nom: " + nomMatch);
+        System.out.println("Correspondance organisme: " + organismeMatch);
+        System.out.println("Correspondance date: " + dateMatch);
+
+        if (nomMatch && organismeMatch && dateMatch) {
+          System.out.println("=== CORRESPONDANCE TROUVEE ===");
+          System.out.println("Certification trouvée: " + certif.getNom());
+          return ResponseEntity.ok("✅ Certification vérifiée avec succès : " + certif.getNom());
+        } else {
+          System.out.println("Aucune correspondance complète pour cette certification");
         }
+      }
+
+      System.out.println("=== AUCUNE CORRESPONDANCE ===");
+      return ResponseEntity.status(HttpStatus.NOT_FOUND)
+        .body("❌ Aucune correspondance trouvée dans la base de données.");
+
+    } catch (Exception e) {
+      System.err.println("=== ERREUR LORS DE LA VERIFICATION ===");
+      e.printStackTrace();
+      return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+        .body("Erreur lors de l'analyse de l'image : " + e.getMessage());
+    }
+  }
+
+  private String prepareForMatching(String input) {
+    return input.toLowerCase()
+      .replaceAll("[^a-z0-9àâäéèêëîïôöùûüç]", " ")
+      .replaceAll("\\s+", " ")
+      .trim();
+  }
+
+  private String prepareDateForMatching(Date date) {
+    LocalDate localDate = date.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+    // Ajout du format avec espaces
+    return String.format("%02d%02d%04d|%02d/%02d/%04d|%02d-%02d-%04d|%02d %02d %04d",
+      localDate.getDayOfMonth(), localDate.getMonthValue(), localDate.getYear(),
+      localDate.getDayOfMonth(), localDate.getMonthValue(), localDate.getYear(),
+      localDate.getDayOfMonth(), localDate.getMonthValue(), localDate.getYear(),
+      localDate.getDayOfMonth(), localDate.getMonthValue(), localDate.getYear());
+  }
+
+  private boolean containsWithTolerance(String text, String pattern) {
+    // Tolérance aux fautes de frappe (distance de Levenshtein)
+    text = " " + text + " "; // Pour permettre la recherche de mots entiers
+
+    // Essayez d'abord une correspondance exacte
+    if (text.contains(" " + pattern + " ")) {
+      return true;
     }
 
-    @PostMapping("/verify-certification-image")
-    public ResponseEntity<String> verifyCertificationFromImage(@RequestParam("image") MultipartFile imageFile) {
-        try {
-            // Extraire le texte de l'image via OCR
-            String extractedText = ocrService.extractTextFromImage(imageFile);
+    // Sinon, divisez le motif en mots et vérifiez chaque mot
+    String[] words = pattern.split(" ");
+    int matchedWords = 0;
 
-            // Nettoyer et normaliser le texte extrait
-            String normalizedExtractedText = extractedText.replaceAll("\\s+", " ").toLowerCase().replaceAll("[^a-zA-Z0-9\\s]", "");
-            System.out.println("Texte extrait de l'image nettoyé : " + normalizedExtractedText);
-
-            // Récupérer toutes les certifications depuis la base de données
-            List<Certification> certifications = certificationService.retrieveAllCertifications();
-            for (Certification certif : certifications) {
-                // Normaliser les informations de la certification
-                String normalizedNom = certif.getNom().toLowerCase().replaceAll("\\s+", " ");
-                String normalizedOrganisme = certif.getOrganisme().toLowerCase().replaceAll("\\s+", " ");
-
-                // Convertir la date de la certification en LocalDate (sans l'heure)
-                String normalizedDate = certif.getDateObtention().toInstant()
-                        .atZone(java.time.ZoneId.systemDefault())
-                        .toLocalDate().toString(); // Format ISO: yyyy-MM-dd
-
-                // Nettoyer la date extraite de l'image (format 'ddMMyyyy')
-                String extractedDate = extractDateFromText(normalizedExtractedText); // Nouvelle méthode pour extraire la date
-
-                // Affichage des informations de la certification pour inspection
-                System.out.println("Nom: " + normalizedNom + ", Organisme: " + normalizedOrganisme + ", Date: " + normalizedDate);
-
-                // Comparaison des données extraites avec les données de la base
-                if (normalizedExtractedText.contains(normalizedNom) &&
-                        normalizedExtractedText.contains(normalizedOrganisme) &&
-                        extractedDate.equals(normalizedDate)) {
-
-                    // Si une correspondance est trouvée
-                    return ResponseEntity.ok("✅ Certification vérifiée avec succès : " + certif.getNom());
-                }
-            }
-
-            // Si aucune correspondance n'est trouvée
-            return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                    .body("❌ Aucune correspondance trouvée dans la base de données.");
-
-        } catch (Exception e) {
-            // En cas d'erreur, afficher un message d'erreur
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body("Erreur lors de l'analyse de l'image : " + e.getMessage());
-        }
+    for (String word : words) {
+      if (word.length() > 3 && text.contains(" " + word + " ")) {
+        matchedWords++;
+      }
     }
 
-    private String extractDateFromText(String text) {
-        // Recherche de la date au format ddMMyyyy dans le texte
-        String datePattern = "\\d{2}\\d{2}\\d{4}"; // Format ddMMyyyy
-        Pattern pattern = Pattern.compile(datePattern);
-        Matcher matcher = pattern.matcher(text);
+    // Accepte si au moins 50% des mots longs correspondent
+    return words.length > 0 && (matchedWords * 100 / words.length) >= 50;
+  }
 
-        if (matcher.find()) {
-            // Extraire la date et la convertir au format yyyy-MM-dd
-            String dateStr = matcher.group();
-            return dateStr.substring(4, 8) + "-" + dateStr.substring(2, 4) + "-" + dateStr.substring(0, 2); // Format ISO: yyyy-MM-dd
-        }
-
-        return ""; // Retourne une chaîne vide si aucune date n'est trouvée
+  private boolean containsDate(String text, String datePatterns) {
+    String[] patterns = datePatterns.split("\\|");
+    for (String pattern : patterns) {
+      // Permettre des séparateurs variables (/, -, espace)
+      String flexiblePattern = pattern.replaceAll("[/-]", "[-/ ]");
+      if (text.matches(".*\\b" + flexiblePattern + "\\b.*")) {
+        return true;
+      }
     }
+    return false;
+  }
 }
