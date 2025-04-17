@@ -1,0 +1,190 @@
+<!-- Payment Management Dashboard -->
+<div class="dashboard-container">
+  <h1 class="page-title">Payment Management</h1>
+
+  <!-- Statistics Cards -->
+  <div class="stats-grid">
+    <div class="stats-card outstanding">
+      <div class="card-content">
+        <h3 class="card-title">Total Outstanding</h3>
+        <div class="card-value">
+          <span class="currency">$</span>
+          {{ totalOutstanding | number:'1.2-2' }}
+        </div>
+        <div class="card-subtitle">
+          <span class="percentage">{{ outstandingPercentage }}%</span>
+          <span>vs last month</span>
+        </div>
+      </div>
+      <div class="card-icon">
+        <mat-icon>account_balance_wallet</mat-icon>
+      </div>
+  </div>
+
+    <div class="stats-card paid">
+      <div class="card-content">
+        <h3 class="card-title">Total Paid</h3>
+        <div class="card-value">
+          <span class="currency">$</span>
+          {{ totalPaid | number:'1.2-2' }}
+        </div>
+        <div class="card-subtitle">
+          <span class="percentage">{{ paidPercentage }}%</span>
+          <span>vs last month</span>
+        </div>
+      </div>
+      <div class="card-icon">
+        <mat-icon>paid</mat-icon>
+      </div>
+  </div>
+
+    <div class="stats-card pending">
+      <div class="card-content">
+        <h3 class="card-title">Pending Payments</h3>
+        <div class="card-value">{{ pendingCount }}</div>
+        <div class="card-subtitle">
+          <span>${{ pendingAmount | number:'1.2-2' }}</span>
+        </div>
+      </div>
+      <div class="card-icon">
+        <mat-icon>pending</mat-icon>
+      </div>
+  </div>
+
+    <div class="stats-card failed">
+      <div class="card-content">
+        <h3 class="card-title">Failed Payments</h3>
+        <div class="card-value">{{ failedCount }}</div>
+        <div class="card-subtitle">
+          <span>${{ failedAmount | number:'1.2-2' }}</span>
+        </div>
+      </div>
+      <div class="card-icon">
+        <mat-icon>error_outline</mat-icon>
+      </div>
+    </div>
+  </div>
+
+  <!-- Filters -->
+  <div class="filters-section">
+    <mat-form-field appearance="outline">
+      <mat-label>Status</mat-label>
+      <mat-select [(ngModel)]="selectedStatus">
+        <mat-option value="">All</mat-option>
+        <mat-option value="PENDING">Pending</mat-option>
+        <mat-option value="COMPLETED">Completed</mat-option>
+        <mat-option value="FAILED">Failed</mat-option>
+      </mat-select>
+    </mat-form-field>
+
+    <mat-form-field appearance="outline">
+      <mat-label>Payment Method</mat-label>
+      <mat-select [(ngModel)]="selectedMethod">
+        <mat-option value="">All</mat-option>
+        <mat-option value="CARD">Card</mat-option>
+        <mat-option value="BANK">Bank Transfer</mat-option>
+        <mat-option value="CASH">Cash</mat-option>
+      </mat-select>
+    </mat-form-field>
+
+    <mat-form-field appearance="outline" class="date-range">
+      <mat-label>Date Range</mat-label>
+      <mat-date-range-input [rangePicker]="picker">
+        <input matStartDate placeholder="Start date">
+        <input matEndDate placeholder="End date">
+      </mat-date-range-input>
+      <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+      <mat-date-range-picker #picker></mat-date-range-picker>
+    </mat-form-field>
+
+    <button mat-raised-button class="apply-filters-btn" (click)="applyFilters()">
+      <mat-icon>filter_list</mat-icon>
+      Apply Filters
+    </button>
+  </div>
+
+  <!-- Payments Table -->
+  <div class="payments-table-container">
+    <table mat-table [dataSource]="dataSource" class="payments-table">
+      <!-- ID Column -->
+      <ng-container matColumnDef="id">
+        <th mat-header-cell *matHeaderCellDef>ID</th>
+        <td mat-cell *matCellDef="let payment">{{ payment.id }}</td>
+      </ng-container>
+
+      <!-- Amount Column -->
+      <ng-container matColumnDef="amount">
+        <th mat-header-cell *matHeaderCellDef>Amount</th>
+        <td mat-cell *matCellDef="let payment">${{ payment.amount | number:'1.2-2' }}</td>
+      </ng-container>
+
+      <!-- Method Column -->
+      <ng-container matColumnDef="method">
+        <th mat-header-cell *matHeaderCellDef>Method</th>
+        <td mat-cell *matCellDef="let payment">
+          <div class="payment-method">
+            <mat-icon>{{ getMethodIcon(payment.method) }}</mat-icon>
+            {{ payment.method }}
+          </div>
+        </td>
+      </ng-container>
+
+      <!-- Status Column -->
+      <ng-container matColumnDef="status">
+        <th mat-header-cell *matHeaderCellDef>Status</th>
+        <td mat-cell *matCellDef="let payment">
+          <span class="status-badge" [ngClass]="payment.status.toLowerCase()">
+            {{ payment.status }}
+          </span>
+        </td>
+      </ng-container>
+
+      <!-- Payment Date Column -->
+      <ng-container matColumnDef="paymentDate">
+        <th mat-header-cell *matHeaderCellDef>Payment Date</th>
+        <td mat-cell *matCellDef="let payment">{{ payment.paymentDate | date }}</td>
+      </ng-container>
+
+      <!-- Due Date Column -->
+      <ng-container matColumnDef="dueDate">
+        <th mat-header-cell *matHeaderCellDef>Due Date</th>
+        <td mat-cell *matCellDef="let payment">{{ payment.dueDate | date }}</td>
+      </ng-container>
+
+      <!-- Actions Column -->
+      <ng-container matColumnDef="actions">
+        <th mat-header-cell *matHeaderCellDef></th>
+        <td mat-cell *matCellDef="let payment">
+          <button mat-icon-button [matMenuTriggerFor]="menu">
+            <mat-icon>more_vert</mat-icon>
+          </button>
+        <mat-menu #menu="matMenu">
+            <button mat-menu-item (click)="viewPayment(payment)">
+              <mat-icon>visibility</mat-icon>
+              <span>View Details</span>
+            </button>
+            <button mat-menu-item (click)="editPayment(payment)" [disabled]="payment.status !== 'PENDING'">
+              <mat-icon>edit</mat-icon>
+              <span>Edit</span>
+            </button>
+            <button mat-menu-item (click)="deletePayment(payment)" [disabled]="payment.status !== 'PENDING'">
+              <mat-icon>delete</mat-icon>
+              <span>Delete</span>
+            </button>
+        </mat-menu>
+        </td>
+      </ng-container>
+
+      <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+      <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+    </table>
+
+    <mat-paginator [pageSize]="5" [pageSizeOptions]="[5, 10, 25, 100]"></mat-paginator>
+  </div>
+
+  <!-- New Payment Button -->
+  <button mat-raised-button class="new-payment-btn" (click)="createNewPayment()">
+    <mat-icon>add</mat-icon>
+    New Payment
+  </button>
+</div>

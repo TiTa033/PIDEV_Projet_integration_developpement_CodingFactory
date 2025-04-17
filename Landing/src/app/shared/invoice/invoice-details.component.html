@@ -1,0 +1,197 @@
+<!-- Invoice Details -->
+<section class="section bg-light">
+    <div class="container">
+        <!-- Header -->
+        <div class="header">
+            <h1 class="title">Invoice Details</h1>
+            <div class="actions">
+                <button class="btn btn-primary" (click)="markAsPaid()" [disabled]="!invoice || invoice.isPaid">
+                    <i class="mdi mdi-check"></i> Mark as Paid
+                </button>
+                <button class="btn btn-info" (click)="showEmailModal = true">
+                    <i class="mdi mdi-email"></i> Send Email
+                </button>
+                <button class="btn btn-success" (click)="downloadPdf()">
+                    <i class="mdi mdi-file-pdf"></i> Download PDF
+                </button>
+            </div>
+        </div>
+
+        <!-- Loading State -->
+        <div *ngIf="loading" class="text-center">
+            <div class="spinner-border text-primary" role="status">
+                <span class="visually-hidden">Loading...</span>
+            </div>
+            <p class="mt-2">Loading invoice details...</p>
+        </div>
+
+        <!-- Error State -->
+        <div *ngIf="error" class="alert alert-danger text-center">
+            {{error}}
+        </div>
+
+        <!-- Invoice Content -->
+        <div *ngIf="!loading && !error && invoice" class="invoice-details">
+            <!-- Invoice Summary -->
+            <div class="card">
+                <div class="card-header">
+                    <h3>Invoice Summary</h3>
+                </div>
+                <div class="card-body">
+                    <div class="invoice-info">
+                        <div class="info-group">
+                            <div class="label">Invoice Number</div>
+                            <div class="value">#{{invoice.id}}</div>
+                        </div>
+                        <div class="info-group">
+                            <div class="label">Total Amount</div>
+                            <div class="value">${{invoice.totalAmount | number:'1.2-2'}}</div>
+                        </div>
+                        <div class="info-group">
+                            <div class="label">Due Date</div>
+                            <div class="value">{{formatDate(invoice.dueDate)}}</div>
+                        </div>
+                        <div class="info-group">
+                            <div class="label">Status</div>
+                            <div class="value">
+                                <span [class]="getInvoiceStatusClass(invoice.isPaid)">
+                                    {{invoice.isPaid ? 'Paid' : 'Pending'}}
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Payment Progress -->
+            <div class="card">
+                <div class="card-header">
+                    <h3>Payment Progress</h3>
+                </div>
+                <div class="card-body">
+                    <div class="progress-section">
+                        <div class="progress">
+                            <div class="progress-bar" role="progressbar" 
+                                 [style.width.%]="getPaymentProgress()"
+                                 [ngClass]="{'bg-success': invoice.isPaid, 'bg-warning': !invoice.isPaid}">
+                            </div>
+                        </div>
+                        <div class="progress-info">
+                            <span>Paid: ${{calculateTotalPaidAmount() | number:'1.2-2'}}</span>
+                            <span>Remaining: ${{calculateRemainingAmount() | number:'1.2-2'}}</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Installments -->
+            <div class="card">
+                <div class="card-header">
+                    <h3>Installments</h3>
+                </div>
+                <div class="card-body">
+                    <table class="installments-table">
+                        <thead>
+                            <tr>
+                                <th>Amount</th>
+                                <th>Due Date</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr *ngFor="let installment of invoice.installments">
+                                <td>${{installment.amount | number:'1.2-2'}}</td>
+                                <td>{{formatDate(installment.dueDate)}}</td>
+                                <td>
+                                    <span [class]="getInstallmentStatusClass(installment.isPaid)">
+                                        {{installment.isPaid ? 'Paid' : 'Pending'}}
+                                    </span>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Email Modal -->
+<div class="modal fade" [class.show]="showEmailModal" [style.display]="showEmailModal ? 'block' : 'none'">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Send Email</h5>
+                <button type="button" class="btn-close" (click)="showEmailModal = false"></button>
+            </div>
+            <div class="modal-body">
+                <form (ngSubmit)="sendCustomEmail()">
+                    <div class="form-group">
+                        <label for="subject">Subject</label>
+                        <input type="text" class="form-control" id="subject" 
+                               [(ngModel)]="emailForm.subject" name="subject" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="message">Message</label>
+                        <textarea class="form-control" id="message" rows="5"
+                                  [(ngModel)]="emailForm.message" name="message" required></textarea>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" (click)="showEmailModal = false">Cancel</button>
+                        <button type="submit" class="btn btn-primary">Send</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Styles -->
+<style>
+.modal {
+    background-color: rgba(0, 0, 0, 0.5);
+}
+
+.modal-content {
+    border-radius: 10px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+}
+
+.card {
+    border: none;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+    transition: transform 0.2s ease;
+}
+
+.card:hover {
+    transform: translateY(-5px);
+}
+
+.progress {
+    height: 8px;
+    background-color: #e9ecef;
+}
+
+.progress-bar {
+    background-color: #0d6efd;
+    transition: width 0.6s ease;
+}
+
+.badge {
+    font-size: 0.9em;
+    padding: 0.5em 0.8em;
+}
+
+.table {
+    margin-bottom: 0;
+}
+
+.table th {
+    border-top: none;
+    font-weight: 600;
+}
+
+.table td {
+    vertical-align: middle;
+}
+</style> 

@@ -1,0 +1,176 @@
+.invoice-form {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 2rem;
+  background: #fff;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+
+  .form-header {
+    margin-bottom: 2rem;
+    text-align: center;
+
+    h2 {
+      color: #333;
+      margin-bottom: 0.5rem;
+    }
+
+    p {
+      color: #666;
+    }
+  }
+
+  .form-group {
+    margin-bottom: 1.5rem;
+
+    label {
+      display: block;
+      margin-bottom: 0.5rem;
+      color: #333;
+      font-weight: 500;
+    }
+
+    .form-control {
+      width: 100%;
+      padding: 0.75rem;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+      transition: border-color 0.3s ease;
+
+      &:focus {
+        border-color: #0d6efd;
+        outline: none;
+        box-shadow: 0 0 0 0.2rem rgba(13, 110, 253, 0.25);
+      }
+    }
+
+    .form-select {
+      width: 100%;
+      padding: 0.75rem;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+      background-color: #fff;
+      transition: border-color 0.3s ease;
+
+      &:focus {
+        border-color: #0d6efd;
+        outline: none;
+        box-shadow: 0 0 0 0.2rem rgba(13, 110, 253, 0.25);
+      }
+    }
+  }
+
+  .installment-section {
+    margin-top: 2rem;
+    padding: 1.5rem;
+    background: #f8f9fa;
+    border-radius: 6px;
+
+    .installment-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1rem;
+
+      h3 {
+        margin: 0;
+        color: #333;
+      }
+    }
+
+    .installment-item {
+      display: flex;
+      gap: 1rem;
+      margin-bottom: 1rem;
+      padding: 1rem;
+      background: #fff;
+      border-radius: 4px;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+
+      .form-group {
+        flex: 1;
+        margin-bottom: 0;
+      }
+
+      .remove-installment {
+        align-self: center;
+        padding: 0.5rem;
+        color: #dc3545;
+        background: none;
+        border: none;
+        cursor: pointer;
+        transition: color 0.3s ease;
+
+        &:hover {
+          color: #b02a37;
+        }
+      }
+    }
+  }
+
+  .form-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 1rem;
+    margin-top: 2rem;
+
+    .btn {
+      padding: 0.75rem 1.5rem;
+      border-radius: 4px;
+      font-weight: 500;
+      transition: all 0.3s ease;
+
+      &.btn-primary {
+        background-color: #0d6efd;
+        border: none;
+        color: #fff;
+
+        &:hover {
+          background-color: #0b5ed7;
+        }
+      }
+
+      &.btn-secondary {
+        background-color: #6c757d;
+        border: none;
+        color: #fff;
+
+        &:hover {
+          background-color: #5c636a;
+        }
+      }
+    }
+  }
+
+  .error-message {
+    color: #dc3545;
+    font-size: 0.875rem;
+    margin-top: 0.5rem;
+  }
+
+  .success-message {
+    color: #198754;
+    font-size: 0.875rem;
+    margin-top: 0.5rem;
+  }
+}
+
+// Responsive styles
+@media (max-width: 768px) {
+  .invoice-form {
+    padding: 1rem;
+
+    .installment-item {
+      flex-direction: column;
+      gap: 0.5rem;
+    }
+
+    .form-actions {
+      flex-direction: column;
+
+      .btn {
+        width: 100%;
+      }
+    }
+  }
+}
