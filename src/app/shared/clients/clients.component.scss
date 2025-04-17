@@ -1,0 +1,40 @@
+/* Float animation on hover */
+.animate-float:hover {
+  transform: translateY(-8px) scale(1.02);
+  box-shadow: 0 1rem 2rem rgba(0, 0, 0, 0.15);
+}
+
+/* Custom carousel controls */
+.custom-carousel-control {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  background-color: rgba(0, 0, 0, 0.4);
+  border: none;
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  color: #fff;
+  z-index: 1;
+  transition: all 0.2s ease-in-out;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.custom-carousel-control:hover {
+  background-color: rgba(0, 0, 0, 0.7);
+  transform: translateY(-50%) scale(1.1);
+}
+
+.carousel-control-prev.custom-carousel-control {
+  left: -25px;
+}
+
+.carousel-control-next.custom-carousel-control {
+  right: -25px;
+}
+
+.carousel-control-icon {
+  font-size: 1.5rem;
+}

@@ -1,0 +1,175 @@
+<div class="container mt-4">
+  <h2 class="mb-4 text-center">📋 Manage Candidatures</h2>
+  <input type="text" [(ngModel)]="searchText" placeholder="Search by email" class="form-control mb-3" />
+
+  <ul>
+    <li  *ngFor="let item of users | filter:searchText">
+    </li>
+  </ul>
+  <!-- Display Error Messages -->
+  <div *ngIf="errorMessage" class="alert alert-danger">{{ errorMessage }}</div>
+
+  <!-- ✅ Users Section (List View) -->
+  <div class="card mb-4">
+    <div class="card-header bg-dark text-white">
+      <h5><i class="mdi mdi-account-multiple"></i> All Users</h5>
+    </div>
+    <div class="card-body">
+      <ul class="list-group">
+
+        <li   *ngFor="let item of users | filter:searchText" class="list-group-item d-flex justify-content-between align-items-center">
+          <div>
+            <h6 class="mb-1"><i class="mdi mdi-account"></i> {{ item.firstname }}</h6>
+            <p class="mb-0"><i class="mdi mdi-email"></i> {{ item.email }}</p>
+          </div>
+          <!-- ✅ Delete Button -->
+          <button class="btn btn-danger btn-sm" (click)="deleteUser(item.id)">
+            <i class="mdi mdi-delete"></i> Delete
+          </button>
+        </li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="row mb-3">
+    <div class="col-md-6">
+      <label for="statusFilter" class="form-label"><strong>Filter by Status:</strong></label>
+      <select [(ngModel)]="statusFilter" id="statusFilter" class="form-select">
+        <option value="">All</option>
+        <option value="PENDING">Pending</option>
+        <option value="ACCEPTED">Accepted</option>
+        <option value="REJECTED">Rejected</option>
+      </select>
+    </div>
+  </div>
+
+
+  <!-- ✅ Candidature List -->
+  <div class="list-group" *ngIf="candidatures && candidatures.length">
+    <div *ngFor="let candidature of filteredCandidatures() | paginate: { itemsPerPage: 2, currentPage: page }"
+         class="list-group-item p-0 mb-3 border-0">
+
+
+
+
+
+      <div class="card shadow-sm">
+        <div class="card-body">
+          <div class="d-flex justify-content-between align-items-center">
+            <h5 class="card-title text-primary">
+              <i class="mdi mdi-account"></i> {{ candidature.nom }}
+            </h5>
+            <span class="badge bg-secondary">{{ candidature.dateDeNaissance }}</span>
+          </div>
+
+          <p class="card-text">
+            <i class="mdi mdi-email-outline"></i> <strong>Email:</strong> {{ candidature.email }}
+          </p>
+          <p class="card-text">
+            <i class="mdi mdi-briefcase"></i> <strong>Speciality:</strong> {{ candidature.specialite }}
+          </p>
+
+          <div class="d-flex align-items-center mb-3">
+            <label class="me-2"><i class="mdi mdi-flag"></i> <strong>Status:</strong></label>
+            <select (change)="updateStatus(candidature.id!, $event)" class="form-select w-auto">
+              <option [selected]="candidature.status === 'PENDING'" value="PENDING">Pending</option>
+              <option [selected]="candidature.status === 'ACCEPTED'" value="ACCEPTED">Accepted</option>
+              <option [selected]="candidature.status === 'REJECTED'" value="REJECTED">Rejected</option>
+            </select>
+          </div>
+
+
+          <div class="d-flex justify-content-between">
+            <button (click)="downloadCvFile(candidature.id!)" class="btn btn-outline-primary btn-sm">
+              <i class="mdi mdi-file-download"></i> Download CV
+            </button>
+
+            <button class="btn btn-info btn-sm mx-2" (click)="viewDetails(candidature)">
+              <i class="mdi mdi-eye"></i> Details
+            </button>
+            <button class="btn btn-danger btn-sm" (click)="deleteCandidature(candidature.id!)">
+              <i class="mdi mdi-delete"></i> Delete
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ✅ Pagination Controls -->
+    <pagination-controls
+      (pageChange)="page = $event"
+      previousLabel="«"
+      nextLabel="»"
+      [maxSize]="5"
+      class="d-flex justify-content-center mt-3">
+    </pagination-controls>
+
+    <!-- Optional: No data message -->
+    <div *ngIf="candidatures && candidatures.length === 0" class="text-center mt-4 text-muted">
+      No candidatures found.
+    </div>
+
+
+    <!-- Details Modal -->
+    <div *ngIf="selectedCandidature" class="modal fade show d-block" tabindex="-1">
+      <div class="modal-dialog">
+        <div class="modal-content shadow">
+          <div class="modal-header bg-primary text-white">
+            <h5 class="modal-title">
+              <i class="mdi mdi-account-details"></i> Candidature Details
+            </h5>
+            <button type="button" class="btn-close" (click)="selectedCandidature = null"></button>
+          </div>
+          <div class="modal-body">
+            <p><strong>Name:</strong> {{ selectedCandidature.nom }}</p>
+            <p><strong>Email:</strong> {{ selectedCandidature.email }}</p>
+            <p><strong>Date of Birth:</strong> {{ selectedCandidature.dateDeNaissance }}</p>
+            <p><strong>Speciality:</strong> {{ selectedCandidature.specialite }}</p>
+            <p><strong>Status:</strong> {{ selectedCandidature.status }}</p>
+            <p>
+              <strong>CV:</strong>
+              <button class="btn btn-sm btn-outline-primary" (click)="downloadCvFile(selectedCandidature.id!)">
+                <i class="mdi mdi-download"></i> Download CV
+              </button>
+            </p>
+
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+  <!-- 📊 Weekly Submission Statistics Chart -->
+  <div class="card mb-4 mt-5">
+    <div class="card-header bg-primary text-white">
+      <h5><i class="mdi mdi-chart-bar"></i> Weekly Submissions</h5>
+    </div>
+    <div class="card-body">
+      <canvas baseChart
+              [data]="lineChartData"
+              [type]="lineChartType"
+              [legend]="true"
+              [options]="{
+              responsive: true,
+              plugins: {
+                legend: {
+                  display: true,
+                  position: 'bottom'
+                }
+              },
+              scales: {
+                x: {
+                  title: { display: true, text: 'Date' }
+                },
+                y: {
+                  beginAtZero: true,
+                  title: { display: true, text: 'Submissions' }
+                }
+              }
+            }"
+              height="100">
+      </canvas>
+    </div>
+  </div>
+</div>

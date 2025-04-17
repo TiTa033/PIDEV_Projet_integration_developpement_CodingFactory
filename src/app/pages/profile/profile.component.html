@@ -1,0 +1,62 @@
+<div class="container mt-5">
+    <h2 class="text-center">👤 User Profile</h2>
+
+    <div *ngIf="successMessage" class="alert alert-success">{{ successMessage }}</div>
+    <div *ngIf="errorMessage" class="alert alert-danger">{{ errorMessage }}</div>
+
+  <div class="mb-4">
+    <button class="btn btn-outline-secondary d-flex align-items-center gap-1" (click)="goBack()">
+      <i class="mdi mdi-arrow-left"></i> Back
+    </button>
+  </div>
+
+
+  <div class="card shadow-sm p-4">
+        <div class="mb-3">
+            <input type="file" class="form-control" (change)="onFileSelected($event)">
+          </div>
+
+          <button class="btn btn-primary" (click)="uploadImage()">Upload Image</button>
+
+
+      <div class="mt-4">
+        <label>First Name:</label>
+        <input type="text" [(ngModel)]="user.firstname" class="form-control">
+
+        <label>Last Name:</label>
+        <input type="text" [(ngModel)]="user.lastname" class="form-control">
+
+        <label>Email:</label>
+        <input type="email" [(ngModel)]="user.email" class="form-control">
+
+        <button class="btn btn-success mt-3" (click)="updateProfile()">Save Changes</button>
+      </div>
+    </div>
+    <div class="container mt-4">
+        <h2>🔐 Change Password</h2>
+
+        <div *ngIf="successMessage" class="alert alert-success">{{ successMessage }}</div>
+        <div *ngIf="errorMessage" class="alert alert-danger">{{ errorMessage }}</div>
+
+        <form (ngSubmit)="changePassword()">
+          <div class="mb-3">
+            <label class="form-label">Current Password</label>
+            <input type="password" [(ngModel)]="currentPassword" name="currentPassword" class="form-control" required>
+          </div>
+
+          <div class="mb-3">
+            <label class="form-label">New Password</label>
+            <input type="password" [(ngModel)]="newPassword" name="newPassword" class="form-control" required>
+          </div>
+
+          <div class="mb-3">
+            <label class="form-label">Confirm New Password</label>
+            <input type="password" [(ngModel)]="confirmationPassword" name="confirmationPassword" class="form-control" required>
+          </div>
+
+          <button type="submit" class="btn btn-primary">Update Password</button>
+        </form>
+      </div>
+
+
+  </div>

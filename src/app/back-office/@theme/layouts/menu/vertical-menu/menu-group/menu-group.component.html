@@ -1,0 +1,35 @@
+<li class="nav-item coded-menu-caption">
+  <label for="group-title">{{ item().title }}</label>
+</li>
+@for (item of item().children; track item) {
+  @if (item.type === 'group') {
+    <app-menu-group-vertical [item]="item"></app-menu-group-vertical>
+  }
+  @if (item.type === 'collapse') {
+    <app-menu-collapse [item]="item"></app-menu-collapse>
+  }
+  @if (item.type === 'item') {
+    <app-menu-item [item]="item"></app-menu-item>
+  }
+}
+<li class="nav-item" [routerLink]="['/admin/events']" routerLinkActive="active">
+  <a class="nav-link">
+    <span class="coded-micon">
+      <svg class="pc-icon">
+        <use xlink:href="assets/fonts/custom-icon.svg#calendar-event"></use>
+      </svg>
+    </span>
+    <span class="coded-mtext">Events</span>
+  </a>
+</li>
+<li class="nav-item" [routerLink]="['/admin/projects']" routerLinkActive="active">
+  <a class="nav-link">
+    <span class="coded-micon">
+      <svg class="pc-icon">
+        <use xlink:href="assets/fonts/custom-icon.svg#calendar-event"></use>
+      </svg>
+    </span>
+    <span class="coded-mtext">Projects</span>
+  </a>
+</li>
+

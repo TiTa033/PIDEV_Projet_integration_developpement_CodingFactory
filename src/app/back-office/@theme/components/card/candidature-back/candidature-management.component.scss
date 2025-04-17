@@ -1,0 +1,28 @@
+.card {
+  border-radius: 12px;
+  transition: transform 0.2s ease-in-out;
+}
+
+.card:hover {
+  transform: scale(1.02);
+}
+
+.badge {
+  font-size: 0.85rem;
+  padding: 5px 10px;
+  border-radius: 12px;
+}
+
+select.form-select {
+  border-radius: 8px;
+  padding: 5px;
+}
+
+.modal-content {
+  border-radius: 12px;
+}
+
+.modal-header {
+  border-top-left-radius: 12px;
+  border-top-right-radius: 12px;
+}

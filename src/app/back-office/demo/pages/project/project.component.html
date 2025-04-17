@@ -1,0 +1,42 @@
+<div class="container mt-5">
+  <h2 class="text-center mb-4">📁 Project Management</h2>
+  <div class="mb-3 text-center">
+    <input type="text" [(ngModel)]="searchQuery" (input)="onSearch()" placeholder="Search Projects by Tag or Name" class="form-control d-inline-block w-50">
+  </div>
+  <!-- 🗂️ Projects List -->
+  <div class="row" *ngIf="projects?.length; else noProjects">
+    <div class="col-md-6 col-lg-4 mb-4" *ngFor="let project of projects">
+      <div class="card h-100 shadow border-0">
+        <div class="card-body d-flex flex-column justify-content-between">
+          <div>
+            <h5 class="card-title text-primary fw-bold mb-2">
+              {{ project.projectName }}
+            </h5>
+            <p class="text-muted small mb-2">
+              {{ project.projectDescription || 'No description available.' }}
+            </p>
+            <div class="mb-2">
+              <span class="badge bg-info text-dark me-1">🏷️ {{ project.tags }}</span>
+              <span class="badge bg-secondary" *ngIf="project.status">📌 {{ project.status }}</span>
+            </div>
+          </div>
+          <div class="d-flex justify-content-between mt-3">
+            <button class="btn btn-outline-danger btn-sm" (click)="deleteProject(project.id)" title="Delete this project">
+              🗑️ Delete
+            </button>
+            <button class="btn btn-outline-primary btn-sm" (click)="downloadProjectFiles(project.id)" title="Download associated files">
+              ⬇️ Files
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ❌ No Projects Message -->
+  <ng-template #noProjects>
+    <div class="alert alert-warning text-center mt-4">
+      No projects available. Add some to get started!
+    </div>
+  </ng-template>
+</div>
