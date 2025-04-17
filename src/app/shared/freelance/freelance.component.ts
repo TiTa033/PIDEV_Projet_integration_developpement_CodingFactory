@@ -1,14 +1,7 @@
 import { Component, OnInit } from '@angular/core';
-import { FreelanceService } from 'src/app/services/freelance.service';
+import { FreelanceService, Freelance } from 'src/app/services/freelance.service';
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
-
-interface Freelance {
-  id: number;
-  nom: string;
-  email: string;
-  tarifHoraire: number;
-}
 
 @Component({
   selector: 'app-freelance',
@@ -18,10 +11,22 @@ interface Freelance {
   imports: [FormsModule, CommonModule]
 })
 export class FreelanceComponent implements OnInit {
-  freelances: Freelance[] = []; // Liste des freelances
-  newFreelance: Partial<Freelance> = { nom: '', email: '', tarifHoraire: 0 }; // Objet pour formulaire
-  isFormVisible = false; // Gérer l'affichage du formulaire
-  editingFreelance: Freelance | null = null; // Stocke le freelance en cours d'édition
+  freelances: Freelance[] = [];
+  filteredFreelances: Freelance[] = [];
+  newFreelance: Partial<Freelance> = { nom: '', email: '', tarifHoraire: 0 };
+  isFormVisible = false;
+  editingFreelance: Freelance | null = null;
+// Propriétés du chatbot
+messages: { sender: 'user' | 'bot'; text: string }[] = [];
+userMessage: string = '';
+isTyping: boolean = false;
+suggestions: string[] = [];
+
+  filterMin = 0;
+  filterMax = 0;
+  sortOrder: 'asc' | 'desc' | '' = '';
+
+
 
   constructor(private freelanceService: FreelanceService) {}
 
@@ -30,13 +35,13 @@ export class FreelanceComponent implements OnInit {
   }
 
   loadFreelances(): void {
-    this.freelanceService.getFreelances().subscribe((data: Freelance[]) => {
+    this.freelanceService.getFreelances().subscribe(data => {
       this.freelances = data;
+      this.filteredFreelances = data;
     });
   }
 
   toggleForm(): void {
-    // Toggle form visibility without scrolling to the top
     this.isFormVisible = !this.isFormVisible;
     if (!this.isFormVisible) {
       this.newFreelance = { nom: '', email: '', tarifHoraire: 0 };
@@ -46,24 +51,19 @@ export class FreelanceComponent implements OnInit {
 
   addOrUpdateFreelance(): void {
     if (this.editingFreelance) {
-      // Mise à jour
       const updatedFreelance: Freelance = {
         id: this.editingFreelance.id,
         ...this.newFreelance
       } as Freelance;
-
       this.freelanceService.updateFreelance(updatedFreelance).subscribe(() => {
         this.loadFreelances();
         this.toggleForm();
       });
-
     } else {
-      // Ajout
       const freelanceToAdd: Freelance = {
         id: 0,
         ...this.newFreelance
       } as Freelance;
-
       this.freelanceService.addFreelance(freelanceToAdd).subscribe(() => {
         this.loadFreelances();
         this.toggleForm();
@@ -71,9 +71,13 @@ export class FreelanceComponent implements OnInit {
     }
   }
 
-  editFreelance(freelance: Freelance): void {
-    this.editingFreelance = { ...freelance }; // Cloner l'objet
-    this.newFreelance = { nom: freelance.nom, email: freelance.email, tarifHoraire: freelance.tarifHoraire };
+  editFreelance(f: Freelance): void {
+    this.editingFreelance = { ...f };
+    this.newFreelance = {
+      nom: f.nom,
+      email: f.email,
+      tarifHoraire: f.tarifHoraire
+    };
     this.isFormVisible = true;
   }
 
@@ -82,4 +86,79 @@ export class FreelanceComponent implements OnInit {
       this.loadFreelances();
     });
   }
+
+  applyFilter(): void {
+    if (this.filterMin && this.filterMax) {
+      this.freelanceService.getFreelancesByTarif(this.filterMin, this.filterMax).subscribe(data => {
+        this.filteredFreelances = data;
+      });
+    }
+  }
+
+  clearFilter(): void {
+    this.filterMin = 0;
+    this.filterMax = 0;
+    this.filteredFreelances = this.freelances;
+  }
+
+  sortByTarif(order: 'asc' | 'desc'): void {
+    this.sortOrder = order;
+    this.freelanceService.getFreelancesSortedByTarif(order).subscribe(data => {
+      this.filteredFreelances = data;
+    });
+  }
+
+  sendMessage(): void {
+    if (this.userMessage.trim()) {
+      const msg = this.userMessage;
+      this.messages.push({ sender: 'user', text: msg });
+      this.userMessage = '';
+      this.suggestions = [];
+      this.isTyping = true;
+  
+      setTimeout(() => {
+        const botReply = this.generateBotReply(msg);
+        this.messages.push({ sender: 'bot', text: botReply.text });
+        this.suggestions = botReply.suggestions || [];
+        this.isTyping = false;
+      }, 1000);
+    }
+  }
+  
+
+  generateBotReply(userInput: string): { text: string, suggestions?: string[] } {
+    const lower = userInput.toLowerCase();
+  
+    if (lower.includes('bonjour') || lower.includes('salut')) {
+      return {
+        text: "Bonjour ! Que souhaitez-vous faire ?",
+        suggestions: ['Afficher freelances', 'Ajouter un freelance', 'Trier par tarif']
+      };
+    } else if (lower.includes('ajouter') || lower.includes('freelance')) {
+      return {
+        text: "Cliquez sur '+ Add New Freelance' pour ajouter un nouveau freelance.",
+        suggestions: ['Trier par tarif', 'Filtrer les freelances']
+      };
+    } else if (lower.includes('aide')) {
+      return {
+        text: "Je peux vous aider à gérer les freelances (ajout, édition, suppression, tri, filtre).",
+        suggestions: ['Ajouter freelance', 'Afficher tous', 'Filtrer']
+      };
+    } else if (lower.includes('trier')) {
+      return {
+        text: "Souhaitez-vous trier par tarif croissant ou décroissant ?",
+        suggestions: ['Trier ↑', 'Trier ↓']
+      };
+    } else {
+      return {
+        text: "Désolé, je n’ai pas compris. Essayez par exemple : « afficher freelances ».",
+        suggestions: ['Afficher freelances', 'Ajouter freelance', 'Aide']
+      };
+    }
+  }
+handleSuggestion(suggestion: string): void {
+  this.userMessage = suggestion;
+  this.sendMessage();
+}
+  
 }

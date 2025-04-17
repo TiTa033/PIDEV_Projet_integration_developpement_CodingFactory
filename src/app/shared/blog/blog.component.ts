@@ -7,44 +7,49 @@ import { PublicationService } from 'src/app/services/publication.service';
   styleUrls: ['./blog.component.scss'],
 })
 export class BlogComponent implements OnInit {
-  publications: any[] = []; // Store publications
-  newPublication = { titre: '', contenue: '' }; // Initialize newPublication (no id)
-  isFormVisible = false;  // Flag to toggle form visibility
-  editingPublication: any = null;  // To hold the publication being edited (with id)
+  publications: any[] = [];
+    popularPublications: any[] = []; // Pour stocker les publications populaires
+
+  newPublication = { titre: '', contenue: '' };
+  isFormVisible = false;
+  editingPublication: any = null;
+  comments: { [key: number]: string } = {}; // Pour stocker les commentaires par publication
 
   constructor(private publicationService: PublicationService) {}
 
   ngOnInit(): void {
     this.loadPublications();
+    this.loadPopularPublications();
   }
 
   loadPublications(): void {
     this.publicationService.getPublications().subscribe((data) => {
-      this.publications = data;
+      // Adapter les commentaires pour l'affichage dans Angular
+      this.publications = data.map(pub => ({
+        ...pub,
+        comments: pub.commentaires || []
+      }));
     });
   }
 
   toggleFormVisibility(): void {
     this.isFormVisible = !this.isFormVisible;
     if (!this.isFormVisible) {
-      this.resetForm(); // Reset the form if it's hidden
+      this.resetForm();
     }
   }
 
-  // Save the publication (add new or update)
   savePublication(): void {
     if (this.editingPublication) {
-      // Update publication
       const updatedPublication = {
         ...this.newPublication,
-        id: this.editingPublication.id, // Add the id when editing
+        id: this.editingPublication.id,
       };
       this.publicationService.updatePublication(updatedPublication).subscribe(() => {
         this.loadPublications();
         this.resetForm();
       });
     } else {
-      // Add new publication
       this.publicationService.addPublication(this.newPublication).subscribe(() => {
         this.loadPublications();
         this.resetForm();
@@ -52,24 +57,58 @@ export class BlogComponent implements OnInit {
     }
   }
 
-  // Reset the form for adding new publication or clearing after update
   resetForm(): void {
-    this.newPublication = { titre: '', contenue: '' }; // Reset form fields
-    this.editingPublication = null; // Clear the editing publication
+    this.newPublication = { titre: '', contenue: '' };
+    this.editingPublication = null;
   }
 
-  // Populate the form with data for editing
   editPublication(pub: any): void {
     this.newPublication.titre = pub.titre;
     this.newPublication.contenue = pub.contenue;
-    this.editingPublication = pub; // Set the publication being edited
-    this.isFormVisible = true; // Show the form
+    this.editingPublication = pub;
+    this.isFormVisible = true;
   }
 
-  // Delete publication
   deletePublication(id: number): void {
     this.publicationService.deletePublication(id).subscribe(() => {
       this.loadPublications();
     });
   }
+
+  like(pubId: number): void {
+    this.publicationService.addLike(pubId).subscribe(() => this.loadPublications());
+  }
+
+  dislike(pubId: number): void {
+    this.publicationService.addDislike(pubId).subscribe(() => this.loadPublications());
+  }
+
+  comment(pubId: number): void {
+    const text = this.comments[pubId];
+    if (text && text.trim() !== '') {
+      this.publicationService.addComment(pubId, text).subscribe(() => {
+        this.comments[pubId] = '';
+        this.loadPublications();
+      });
+    }
+  }
+  loadPopularPublications(): void {
+    this.publicationService.getMostPopularPublications().subscribe((data) => {
+      this.popularPublications = data;
+    });
+  }
+  downloadPDF(): void {
+    this.publicationService.downloadPublicationsPdf().subscribe((pdfBlob: Blob) => {
+      const blob = new Blob([pdfBlob], { type: 'application/pdf' });
+      const url = window.URL.createObjectURL(blob);
+  
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = 'publications.pdf';
+      a.click();
+  
+      window.URL.revokeObjectURL(url);
+    });
+  }
+  
 }

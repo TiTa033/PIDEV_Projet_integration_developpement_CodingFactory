@@ -1,174 +1,207 @@
-/* Container principal */
+/* Freelance Styles */
 .freelance-container {
-  padding: 20px;
-  background-color: #f4f7fb;
+  margin: 20px;
+  font-family: Arial, sans-serif;
 }
 
-/* Bouton Ajouter Freelance */
 .add-button {
-  background-color: #4CAF50;
+  background-color: #007bff;
   color: white;
   border: none;
   padding: 10px 20px;
-  font-size: 16px;
+  border-radius: 8px;
   cursor: pointer;
-  border-radius: 5px;
-  margin-bottom: 20px;
-  display: block;
-  width: 200px;
-  margin-left: auto;
-  margin-right: auto;
-  transition: background-color 0.3s;
 }
 
 .add-button:hover {
-  background-color: #45a049;
+  background-color: #0056b3;
 }
 
-/* Liste des freelances */
-.freelance-list {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 20px;
-  justify-content: center;
-  margin-top: 30px;
-}
-
-/* Carte Freelance */
-.freelance-card {
-  background-color: #fff;
-  border: 1px solid #ddd;
-  border-radius: 10px;
-  width: 300px;
-  padding: 20px;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+.filters {
   display: flex;
   justify-content: space-between;
-  align-items: center;
-  position: relative;
-  transition: box-shadow 0.3s;
+  margin-top: 15px;
 }
 
-.freelance-card:hover {
-  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
+.filter-input {
+  padding: 5px;
+  border-radius: 6px;
+  border: 1px solid #ccc;
 }
 
-/* Informations Freelance */
-.freelance-info {
-  flex-grow: 1;
-}
-
-.freelance-info h3 {
-  margin: 0 0 10px 0;
-  font-size: 18px;
-  font-weight: 600;
-}
-
-.freelance-info p {
-  margin: 5px 0;
-  font-size: 14px;
-  color: #666;
-}
-
-/* Menu déroulant des actions */
-.dropdown {
-  position: absolute;
-  top: 10px;
-  right: 10px;
-}
-
-.dropbtn {
-  background-color: transparent;
+.filter-button, .reset-button, .sort-button {
+  background-color: #28a745;
+  color: white;
+  padding: 6px 12px;
   border: none;
-  font-size: 20px;
+  border-radius: 6px;
   cursor: pointer;
 }
 
-.dropdown-content {
-  display: none;
-  position: absolute;
-  background-color: #f9f9f9;
-  min-width: 160px;
-  box-shadow: 0px 8px 16px rgba(0, 0, 0, 0.2);
-  z-index: 1;
-  border-radius: 5px;
+.filter-button:hover, .reset-button:hover, .sort-button:hover {
+  background-color: #218838;
 }
 
-.dropdown:hover .dropdown-content {
-  display: block;
-}
-
-.dropdown-content a {
-  padding: 12px 16px;
-  text-decoration: none;
-  display: block;
-  color: black;
-  font-size: 14px;
-}
-
-.dropdown-content a:hover {
-  background-color: #ddd;
-}
-
-/* Formulaire d'ajout ou d'édition */
-.form-container {
-  max-width: 500px;
-  margin: 20px auto;
-  background-color: #fff;
-  padding: 20px;
-  border-radius: 8px;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-  transition: box-shadow 0.3s;
-}
-
-.form-container:hover {
-  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
-}
-
-.form-container input {
-  width: 100%;
-  padding: 10px;
-  margin-bottom: 10px;
-  border: 1px solid #ddd;
-  border-radius: 5px;
-  font-size: 16px;
-  transition: border-color 0.3s;
-}
-
-.form-container input:focus {
-  border-color: #4CAF50;
-}
-
-/* Boutons du formulaire */
-.form-buttons {
-  display: flex;
-  justify-content: space-between;
+.freelance-list {
   margin-top: 20px;
 }
 
-.submit-btn, .cancel-btn {
-  padding: 10px 20px;
+.freelance-card {
+  background-color: #f8f9fa;
+  padding: 15px;
+  border-radius: 10px;
+  margin-bottom: 15px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.actions {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.edit-button, .delete-button {
+  background-color: #ffc107;
+  color: white;
+  padding: 5px 10px;
+  border-radius: 5px;
+  cursor: pointer;
+  margin-left: 10px;
+}
+
+.delete-button {
+  background-color: #dc3545;
+}
+
+.edit-button:hover, .delete-button:hover {
+  opacity: 0.8;
+}
+
+.form-container {
+  background-color: #f1f1f1;
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.form-actions {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.submit-button, .cancel-button {
+  background-color: #007bff;
+  color: white;
+  padding: 8px 15px;
+  border-radius: 6px;
   border: none;
   cursor: pointer;
-  border-radius: 5px;
-  font-size: 16px;
-  transition: background-color 0.3s;
+  margin-left: 10px;
 }
 
-.submit-btn {
-  background-color: #4CAF50;
+.submit-button:hover, .cancel-button:hover {
+  background-color: #0056b3;
+}
+
+/* Chatbot Styles */
+.chatbot-container {
+  margin-top: 30px;
+  background-color: #ffffff;
+  padding: 20px;
+  border-radius: 12px;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+  width: 100%;
+  max-width: 400px;
+}
+
+.chat-header {
+  background-color: #007bff;
   color: white;
+  padding: 10px;
+  border-radius: 8px;
+  text-align: center;
 }
 
-.submit-btn:hover {
-  background-color: #45a049;
+.chat-box {
+  height: 300px;
+  overflow-y: auto;
+  margin-bottom: 15px;
+  border: 1px solid #ccc;
+  padding: 10px;
+  background-color: #f9f9f9;
+  border-radius: 8px;
 }
 
-.cancel-btn {
-  background-color: #f44336;
+.message {
+  margin-bottom: 10px;
+}
+
+.message p {
+  padding: 8px 12px;
+  border-radius: 10px;
+  display: inline-block;
+  max-width: 80%;
+}
+
+.user-message {
+  background-color: #007bff;
   color: white;
+  text-align: right;
 }
 
-.cancel-btn:hover {
-  background-color: #e53935;
+.bot-message {
+  background-color: #e0e0e0;
+  color: black;
+  text-align: left;
+}
+
+.chat-input {
+  display: flex;
+  justify-content: space-between;
+}
+
+.chat-input input {
+  width: 80%;
+  padding: 10px;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+}
+.typing-indicator {
+  font-style: italic;
+  color: #666;
+  margin-bottom: 10px;
+}
+
+.chat-suggestions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 10px;
+}
+
+.chat-suggestions button {
+  background-color: #6c757d;
+  color: white;
+  border: none;
+  padding: 6px 12px;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.chat-suggestions button:hover {
+  background-color: #5a6268;
+}
+
+
+.chat-input button {
+  background-color: #28a745;
+  color: white;
+  border: none;
+  padding: 10px 15px;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.chat-input button:hover {
+  background-color: #218838;
 }

@@ -6,27 +6,42 @@ import { Observable } from 'rxjs';
   providedIn: 'root',
 })
 export class PublicationService {
-  private baseUrl = 'http://localhost:8088/Forum/Publication'; // Adjust if needed
+  private baseUrl = 'http://localhost:8087/Freelance1/Publication';
 
   constructor(private http: HttpClient) {}
 
-  // ✅ Add a new publication
   addPublication(publication: any): Observable<any> {
     return this.http.post<any>(`${this.baseUrl}/AjoutPub`, publication);
   }
 
-  // ✅ Retrieve all publications
   getPublications(): Observable<any[]> {
     return this.http.get<any[]>(`${this.baseUrl}/AfficherPub`);
   }
 
-  // ✅ Delete a publication by ID
   deletePublication(id: number): Observable<void> {
     return this.http.delete<void>(`${this.baseUrl}/SupprimerPub/${id}`);
   }
 
-  // ✅ Update an existing publication
   updatePublication(publication: any): Observable<any> {
     return this.http.put<any>(`${this.baseUrl}/modifier-Pub`, publication);
   }
+
+  addLike(pubId: number): Observable<any> {
+    return this.http.post(`${this.baseUrl}/like/${pubId}`, {});
+  }
+
+  addDislike(pubId: number): Observable<any> {
+    return this.http.post(`${this.baseUrl}/dislike/${pubId}`, {});
+  }
+
+  addComment(pubId: number, comment: string): Observable<any> {
+    return this.http.post(`${this.baseUrl}/commentaire/${pubId}`, { texte: comment });
+  }
+  getMostPopularPublications(): Observable<any[]> {
+    return this.http.get<any[]>(`${this.baseUrl}/populaires`);
+  }
+  downloadPublicationsPdf(): Observable<Blob> {
+    return this.http.get(`${this.baseUrl}/download-pdf`, { responseType: 'blob' });
+  }
+  
 }

@@ -1,9 +1,7 @@
 <div class="container">
-  <!-- Affichage des publications -->
   <div *ngFor="let publication of publications" class="publication-card">
     <div class="publication-header">
       <h3>{{ publication.titre }}</h3>
-      <!-- Trois points pour le menu déroulant -->
       <div class="dropdown">
         <button class="dropdown-btn">...</button>
         <div class="dropdown-content">
@@ -12,24 +10,40 @@
         </div>
       </div>
     </div>
+    
+
     <p class="publication-content">{{ publication.contenue }}</p>
+
     <div class="publication-footer">
-      <span class="date">Just now</span> <!-- Placeholder for time -->
+      <span class="date">Just now</span>
       <div class="interaction-buttons">
-        <button class="like-btn">Like</button>
+        <button (click)="like(publication.id)">👍 Like ({{ publication.likes || 0 }})</button>
+        <button (click)="dislike(publication.id)">👎 Dislike ({{ publication.dislikes || 0 }})</button>
         <button class="comment-btn">Comment</button>
-        <button class="share-btn">Share</button>
+      </div>
+    </div>
+
+    <!-- Zone de commentaire -->
+    <div class="comment-section">
+      <input [(ngModel)]="comments[publication.id]" placeholder="Add a comment..." />
+      <button (click)="comment(publication.id)">Post</button>
+
+      <div *ngIf="publication.comments && publication.comments.length">
+        <div *ngFor="let comment of publication.comments" class="comment">
+          {{ comment.texte }}
+        </div>
       </div>
     </div>
   </div>
 
-  <!-- Formulaire d'ajout ou modification -->
+  <!-- Formulaire d'ajout/édition -->
   <div *ngIf="isFormVisible" class="form-container">
     <input [(ngModel)]="newPublication.titre" placeholder="Title" />
     <textarea [(ngModel)]="newPublication.contenue" placeholder="What's on your mind?"></textarea>
     <button (click)="savePublication()">Save</button>
     <button (click)="toggleFormVisibility()">Cancel</button>
   </div>
+  <button class="pdf-btn" (click)="downloadPDF()">📄 Télécharger les publications en PDF</button>
 
   <!-- Bouton d'ajout -->
   <button class="add-btn" (click)="toggleFormVisibility()">Add Publication</button>

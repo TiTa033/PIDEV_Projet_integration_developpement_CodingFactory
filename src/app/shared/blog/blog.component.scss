@@ -161,3 +161,45 @@ textarea {
 .add-btn:hover {
   background-color: #218838;
 }
+.comment-section {
+  margin-top: 15px;
+  padding: 10px;
+  background-color: #f8f9fa;
+  border-radius: 5px;
+}
+
+.comment-section input {
+  width: 80%;
+  padding: 8px;
+  margin-right: 10px;
+  border-radius: 5px;
+  border: 1px solid #ccc;
+}
+
+.comment {
+  margin-top: 8px;
+  padding-left: 10px;
+  font-style: italic;
+  color: #444;
+}
+.comment-section {
+  margin-top: 10px;
+
+  textarea {
+    width: 100%;
+    padding: 8px;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+    resize: none;
+    height: 80px;
+    margin-bottom: 8px;
+  }
+
+  button {
+    background-color: #17a2b8;
+  }
+}
+
+.like-btn, .dislike-btn {
+  color: #dc3545;
+}
