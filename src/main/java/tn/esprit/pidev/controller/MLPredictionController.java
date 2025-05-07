@@ -21,6 +21,9 @@ public class MLPredictionController {
 
     @PostMapping
     public Integer predictGrade(@RequestBody PredictionRequestDTO request) {
-        return mlPredictionService.predictGrade(request);
+        System.out.println("Received request: " + request.toString());
+        Integer result = mlPredictionService.predictGrade(request);
+        System.out.println("Prediction result: " + result);
+        return result;
     }
 }
