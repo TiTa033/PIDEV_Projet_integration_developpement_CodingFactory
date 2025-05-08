@@ -43,3 +43,32 @@
 .mat-row:hover {
   background-color: #f8f9fa;
 }
+
+#card-element {
+  padding: 12px;
+  border: 1px solid #e0e0e0;
+  border-radius: 4px;
+  background: white;
+  min-height: 40px;
+}
+
+.StripeElement--focus {
+  border-color: #80bdff;
+  outline: 0;
+  box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
+}
+
+.StripeElement--invalid {
+  border-color: #dc3545;
+}
+
+.text-danger {
+  color: #dc3545;
+  font-size: 0.875rem;
+  margin-top: 0.25rem;
+}
+
+.processing-payment {
+  opacity: 0.7;
+  pointer-events: none;
+}

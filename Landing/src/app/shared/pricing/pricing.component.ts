@@ -1,5 +1,6 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ElementRef, ViewChild, OnDestroy } from '@angular/core';
 import { PaymentService, Payment } from '../services/payment.service';
+import { StripeService } from '../services/stripe.service';
 import { Observable, of } from 'rxjs';
 import { CommonModule } from '@angular/common';
 import { catchError, map } from 'rxjs/operators';
@@ -8,6 +9,9 @@ import * as XLSX from 'xlsx';
 import { BaseChartDirective, provideCharts, withDefaultRegisterables } from 'ng2-charts';
 import { ChartConfiguration, ChartData, ChartType } from 'chart.js';
 import { RouterModule } from '@angular/router';
+import { loadStripe, Stripe, StripeElements } from '@stripe/stripe-js';
+import { environment } from '../../../environments/environment';
+import { MatSnackBar } from '@angular/material/snack-bar';
 
 interface PaymentHistory {
   date: string;
@@ -35,7 +39,18 @@ interface PaymentAnalytics {
   templateUrl: './pricing.component.html',
   styleUrls: ['./pricing.component.scss']
 })
-export class PricingComponent implements OnInit {
+export class PricingComponent implements OnInit, OnDestroy {
+  @ViewChild('cardElement') cardElement!: ElementRef;
+  
+  private elements: StripeElements | null = null;
+  card: any;
+  processingPayment = false;
+  paymentError: string | null = null;
+  cardMounted = false;
+  showPaymentModal = false;
+  private initializationAttempts = 0;
+  private readonly MAX_INIT_ATTEMPTS = 3;
+
   payments$: Observable<Payment[]> = of([]);
   payments: Payment[] = [];
   filteredPayments: Payment[] = [];
@@ -175,10 +190,71 @@ export class PricingComponent implements OnInit {
   paymentAttachments: File[] = [];
   reminderDays = 7;
 
-  constructor(private paymentService: PaymentService) {}
+  constructor(
+    private paymentService: PaymentService,
+    private stripeService: StripeService,
+    private snackBar: MatSnackBar
+  ) {}
 
-  ngOnInit(): void {
+  async ngOnInit() {
+    await this.initializeStripe();
     this.loadPayments();
+  }
+
+  private async initializeStripe() {
+    try {
+      const stripe = await this.stripeService.getStripe();
+      if (stripe) {
+        this.elements = stripe.elements();
+        this.card = this.elements.create('card', {
+          style: {
+            base: {
+              fontSize: '16px',
+              color: '#32325d',
+              fontFamily: '"Helvetica Neue", Helvetica, sans-serif',
+              fontSmoothing: 'antialiased',
+              '::placeholder': {
+                color: '#aab7c4'
+              }
+            },
+            invalid: {
+              color: '#fa755a',
+              iconColor: '#fa755a'
+            }
+          }
+        });
+
+        // Wait for the next tick to ensure the element is in the DOM
+        setTimeout(() => {
+          if (this.cardElement?.nativeElement) {
+            this.card.mount(this.cardElement.nativeElement);
+            this.cardMounted = true;
+            this.initializationAttempts = 0;
+            
+            this.card.addEventListener('change', (event: any) => {
+              this.paymentError = event.error ? event.error.message : null;
+            });
+          } else {
+            console.error('Card element not found in DOM');
+            this.retryInitialization();
+          }
+        }, 100);
+      }
+    } catch (error) {
+      console.error('Error initializing Stripe:', error);
+      this.retryInitialization();
+    }
+  }
+
+  private retryInitialization() {
+    if (this.initializationAttempts < this.MAX_INIT_ATTEMPTS) {
+      this.initializationAttempts++;
+      console.log(`Retrying Stripe initialization (attempt ${this.initializationAttempts})`);
+      setTimeout(() => this.initializeStripe(), 1000); // Retry after 1 second
+    } else {
+      console.error('Failed to initialize Stripe after multiple attempts');
+      this.snackBar.open('Failed to initialize payment system. Please refresh the page.', 'Close', { duration: 5000 });
+    }
   }
 
   loadPayments(): void {
@@ -480,18 +556,68 @@ export class PricingComponent implements OnInit {
     };
   }
 
-  processPayment(payment: Payment): void {
-    this.paymentService.createPayment(payment).subscribe({
-      next: (response) => {
-        console.log('Payment processed successfully:', response);
-        this.loadPayments();
-        alert('Payment processed successfully!');
-      },
-      error: (error) => {
-        console.error('Error processing payment:', error);
-        alert('Error processing payment. Please try again.');
+  async processPayment(payment: Payment) {
+    this.selectedPayment = payment;
+    this.showPaymentModal = true;
+    this.paymentError = null;
+    
+    // Initialize Stripe if not already initialized
+    if (!this.card || !this.cardMounted) {
+      await this.initializeStripe();
+    }
+  }
+
+  closePaymentModal() {
+    this.showPaymentModal = false;
+    this.paymentError = null;
+    if (this.card) {
+      this.card.unmount();
+      this.cardMounted = false;
+    }
+  }
+
+  async confirmPayment() {
+    if (!this.selectedPayment) {
+      return;
+    }
+
+    if (!this.card || !this.cardMounted) {
+      this.snackBar.open('Payment system not initialized. Please try again.', 'Close', { duration: 3000 });
+      return;
+    }
+
+    this.processingPayment = true;
+    this.paymentError = null;
+
+    try {
+      // Process the payment through Stripe
+      const result = await this.stripeService.processPayment(this.selectedPayment.amount, this.card);
+      
+      if (result.success) {
+        // Update the existing payment status to COMPLETED
+        await this.paymentService.updatePayment(this.selectedPayment.id!, {
+          ...this.selectedPayment,
+          status: 'COMPLETED'
+        }).toPromise();
+        
+        this.snackBar.open('Payment successful!', 'Close', { duration: 3000 });
+        this.loadPayments(); // Refresh the payments list
+        this.closePaymentModal();
+      } else {
+        // Update the existing payment status to FAILED
+        await this.paymentService.updatePayment(this.selectedPayment.id!, {
+          ...this.selectedPayment,
+          status: 'FAILED'
+        }).toPromise();
+        
+        this.snackBar.open(result.error || 'Payment failed', 'Close', { duration: 3000 });
       }
-    });
+    } catch (error) {
+      console.error('Payment error:', error);
+      this.snackBar.open('An error occurred during payment', 'Close', { duration: 3000 });
+    } finally {
+      this.processingPayment = false;
+    }
   }
 
   getStatusBadgeClass(status: string): string {
@@ -551,5 +677,10 @@ export class PricingComponent implements OnInit {
         endDate: this.paymentRecurrence.endDate
       };
     }
+  }
+
+  // Add cleanup on component destroy
+  ngOnDestroy() {
+    this.closePaymentModal();
   }
 }

@@ -1,6 +1,38 @@
 <!-- START PRICING -->
 <section class="section bg-light" id="price">
     <div class="container">
+        <!-- Payment Modal -->
+        <div class="modal fade" [class.show]="showPaymentModal" [style.display]="showPaymentModal ? 'block' : 'none'">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">Complete Payment</h5>
+                        <button type="button" class="btn-close" (click)="closePaymentModal()"></button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="mb-3">
+                            <label class="form-label">Amount to Pay</label>
+                            <div class="h4 mb-3">${{selectedPayment?.amount}}</div>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Card Details</label>
+                            <div id="card-element" #cardElement class="form-control"></div>
+                            <div *ngIf="paymentError" class="text-danger mt-2">{{ paymentError }}</div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" (click)="closePaymentModal()">Cancel</button>
+                        <button type="button" class="btn btn-primary" 
+                                [disabled]="processingPayment"
+                                (click)="confirmPayment()">
+                            <span *ngIf="processingPayment" class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
+                            {{ processingPayment ? 'Processing...' : 'Pay Now' }}
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
         <!-- Header Section -->
         <div class="row justify-content-center mb-4">
             <div class="col-lg-8">
@@ -217,82 +249,53 @@
                 <div class="card">
                     <div class="card-body">
                         <h5 class="card-title">Create New Payment</h5>
-                        <form (ngSubmit)="createPayment()">
-                            <div class="row g-3">
-                                <div class="col-md-3">
-                                    <label class="form-label">Amount</label>
-                                    <input type="number" class="form-control" [(ngModel)]="newPayment.amount" 
-                                           name="amount" required>
+                        <div class="payment-form">
+                            <form (ngSubmit)="createPayment()">
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label for="amount">Amount</label>
+                                            <input type="number" class="form-control" id="amount" [(ngModel)]="newPayment.amount" name="amount" required>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label for="method">Payment Method</label>
+                                            <select class="form-control" id="method" [(ngModel)]="newPayment.method" name="method" required>
+                                                <option value="CARD">Credit Card</option>
+                                                <option value="BANK">Bank Transfer</option>
+                                                <option value="CASH">Cash</option>
+                                            </select>
+                                        </div>
+                                    </div>
                                 </div>
-                                <div class="col-md-3">
-                                    <label class="form-label">Payment Method</label>
-                                    <select class="form-select" [(ngModel)]="newPayment.method" name="method" required>
-                                        <option value="CARD">Card</option>
-                                        <option value="BANK">Bank</option>
-                                        <option value="CASH">Cash</option>
-                                    </select>
+
+                                <div class="row mt-3">
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label for="paymentDate">Payment Date</label>
+                                            <input type="date" class="form-control" id="paymentDate" [(ngModel)]="newPayment.paymentDate" name="paymentDate" required>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label for="dueDate">Due Date</label>
+                                            <input type="date" class="form-control" id="dueDate" [(ngModel)]="newPayment.dueDate" name="dueDate" required>
+                                        </div>
+                                    </div>
                                 </div>
-                                <div class="col-md-3">
-                                    <label class="form-label">Category</label>
-                                    <select class="form-select" [(ngModel)]="selectedCategory">
-                                        <option *ngFor="let category of paymentCategories" [value]="category">
-                                            {{category}}
-                                        </option>
-                                    </select>
-                                </div>
-                                <div class="col-md-3">
-                                    <label class="form-label">Tags</label>
-                                    <div class="input-group">
-                                        <input type="text" class="form-control" [(ngModel)]="newTag" 
-                                               (keyup.enter)="addTag()" placeholder="Add tag...">
-                                        <button class="btn btn-outline-secondary" type="button" (click)="addTag()">
-                                            Add
+
+                                <div class="row mt-3">
+                                    <div class="col-12">
+                                        <button type="submit" class="btn btn-primary" [disabled]="processingPayment">
+                                            <span *ngIf="processingPayment" class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
+                                            {{ processingPayment ? 'Processing...' : 'Create Payment' }}
                                         </button>
-                                    </div>
-                                    <div class="mt-2">
-                                        <span *ngFor="let tag of paymentTags" class="badge bg-primary me-1">
-                                            {{tag}}
-                                            <button class="btn-close btn-close-white btn-sm" 
-                                                    (click)="removeTag(tag)"></button>
-                                        </span>
+                                        <button type="button" class="btn btn-secondary ms-2" (click)="showPaymentForm = false">Cancel</button>
                                     </div>
                                 </div>
-                                <div class="col-md-4">
-                                    <label class="form-label">Payment Date</label>
-                                    <input type="date" class="form-control" [(ngModel)]="newPayment.paymentDate" 
-                                           name="paymentDate" required>
-                                </div>
-                                <div class="col-md-4">
-                                    <label class="form-label">Due Date</label>
-                                    <input type="date" class="form-control" [(ngModel)]="newPayment.dueDate" 
-                                           name="dueDate" required>
-                                </div>
-                                <div class="col-md-4">
-                                    <label class="form-label">Recurrence</label>
-                                    <select class="form-select" [(ngModel)]="paymentRecurrence.type" 
-                                            (change)="setRecurringPayment()">
-                                        <option value="none">None</option>
-                                        <option value="daily">Daily</option>
-                                        <option value="weekly">Weekly</option>
-                                        <option value="monthly">Monthly</option>
-                                        <option value="yearly">Yearly</option>
-                                    </select>
-                                    <div *ngIf="paymentRecurrence.type !== 'none'" class="mt-2">
-                                        <input type="number" class="form-control mb-2" 
-                                               [(ngModel)]="paymentRecurrence.interval" min="1"
-                                               placeholder="Interval">
-                                        <input type="date" class="form-control" 
-                                               [(ngModel)]="paymentRecurrence.endDate"
-                                               placeholder="End Date">
-                                    </div>
-                                </div>
-                                <div class="col-12">
-                                    <button type="submit" class="btn btn-primary">Create Payment</button>
-                                    <button type="button" class="btn btn-secondary ms-2" 
-                                            (click)="showPaymentForm = false">Cancel</button>
-                                </div>
-                            </div>
-                        </form>
+                            </form>
+                        </div>
                     </div>
                 </div>
             </div>
