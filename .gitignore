@@ -88,4 +88,8 @@ testem.log
 /src/environments/*.js.map
 
 # Debug files
-debug.log 
+debug.log
+
+# Application properties
+gestion finance/src/main/resources/application.properties
+!gestion finance/src/main/resources/application.properties.template 
