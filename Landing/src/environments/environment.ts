@@ -8,7 +8,7 @@ export const environment = {
   production: false,
   appVersion: packageInfo.version, // ✅ Define appVersion here!
   apiUrl: 'http://localhost:8080/api', // Backend base URL
-  stripePublicKey: 'pk_test_51RMTtWQ6GycRUWGTwujdhkpYROUAQ80iBvxFxAkcyM7SAoknDmyNjxCywRMxXWaCaGkv6CrggbtTI44gRLtyxSAS00UOvYrLDd' // Replace with your actual Stripe public key
+  stripePublicKey: '**' // Replace with your actual Stripe public key
 };
 
 

@@ -1,0 +1,138 @@
+<mat-sidenav-container class="admin-container">
+  <!-- Sidebar -->
+  <mat-sidenav #sidenav mode="side" opened class="admin-sidenav">
+    <div class="sidenav-header">
+      <img src="assets/backoffice/images/logo-dark.svg" alt="Logo" class="logo">
+      <button mat-icon-button class="close-sidenav" (click)="sidenav.toggle()">
+        <mat-icon>close</mat-icon>
+      </button>
+        </div>
+
+    <!-- User Profile -->
+    <div class="user-profile">
+      <div class="avatar">
+        <img [src]="user?.avatar || 'assets/backoffice/images/default-avatar.png'" alt="User Avatar">
+      </div>
+      <div class="user-info">
+        <h3>{{ user?.name || 'User Name' }}</h3>
+        <span class="user-role">{{ user?.role || 'Admin' }}</span>
+      </div>
+    </div>
+
+    <!-- Navigation -->
+    <mat-nav-list>
+      <a mat-list-item routerLink="/admin/dashboard" routerLinkActive="active">
+        <mat-icon>dashboard</mat-icon>
+        <span>Dashboard</span>
+        <mat-icon class="nav-indicator">chevron_right</mat-icon>
+      </a>
+
+      <a mat-list-item routerLink="/admin/payments" routerLinkActive="active">
+        <mat-icon>payments</mat-icon>
+        <span>Payments</span>
+        <mat-icon class="nav-indicator">chevron_right</mat-icon>
+      </a>
+
+      <a mat-list-item routerLink="/admin/invoices" routerLinkActive="active">
+        <mat-icon>receipt</mat-icon>
+        <span>Invoices</span>
+        <mat-icon class="nav-indicator">chevron_right</mat-icon>
+      </a>
+
+      <a mat-list-item routerLink="/admin/reports" routerLinkActive="active">
+        <mat-icon>analytics</mat-icon>
+        <span>Reports</span>
+        <mat-icon class="nav-indicator">chevron_right</mat-icon>
+      </a>
+
+      <a mat-list-item routerLink="/admin/settings" routerLinkActive="active">
+        <mat-icon>settings</mat-icon>
+        <span>Settings</span>
+        <mat-icon class="nav-indicator">chevron_right</mat-icon>
+      </a>
+    </mat-nav-list>
+
+    <!-- Footer -->
+    <div class="sidenav-footer">
+      <button mat-button class="logout-btn" (click)="logout()">
+        <mat-icon>logout</mat-icon>
+        <span>Logout</span>
+      </button>
+    </div>
+  </mat-sidenav>
+
+  <!-- Main Content -->
+  <mat-sidenav-content class="admin-content">
+    <!-- Header -->
+    <header class="admin-header">
+      <div class="header-left">
+        <button mat-icon-button class="menu-toggle" (click)="sidenav.toggle()">
+          <mat-icon>menu</mat-icon>
+        </button>
+        <h1 class="page-title">{{ pageTitle }}</h1>
+  </div>
+      
+      <div class="header-right">
+        <button mat-icon-button class="notification-btn" [matMenuTriggerFor]="notificationMenu">
+          <mat-icon [matBadge]="notifications.length" matBadgeColor="warn">notifications</mat-icon>
+        </button>
+        <mat-menu #notificationMenu="matMenu">
+          <div class="notification-header">
+            <h3>Notifications</h3>
+            <button mat-button color="primary">Mark all as read</button>
+          </div>
+          <div class="notification-list">
+            <button mat-menu-item *ngFor="let notification of notifications">
+              <div class="notification-content">
+                <mat-icon [ngClass]="notification.type">{{ notification.icon }}</mat-icon>
+                <div class="notification-details">
+                  <p>{{ notification.message }}</p>
+                  <span class="notification-time">{{ notification.time }}</span>
+                </div>
+              </div>
+            </button>
+          </div>
+          <div class="notification-footer">
+            <button mat-button color="primary">View all notifications</button>
+          </div>
+        </mat-menu>
+
+        <button mat-icon-button [matMenuTriggerFor]="userMenu" class="user-menu-btn">
+          <img [src]="user?.avatar || 'assets/backoffice/images/default-avatar.png'" alt="User Avatar" class="header-avatar">
+        </button>
+        <mat-menu #userMenu="matMenu">
+          <div class="user-menu-header">
+            <img [src]="user?.avatar || 'assets/backoffice/images/default-avatar.png'" alt="User Avatar" class="menu-avatar">
+            <div class="user-menu-info">
+              <h3>{{ user?.name || 'User Name' }}</h3>
+              <span>{{ user?.email || 'user@example.com' }}</span>
+            </div>
+          </div>
+          <button mat-menu-item routerLink="/admin/profile">
+            <mat-icon>person</mat-icon>
+            <span>My Profile</span>
+          </button>
+          <button mat-menu-item routerLink="/admin/settings">
+            <mat-icon>settings</mat-icon>
+            <span>Settings</span>
+          </button>
+          <mat-divider></mat-divider>
+          <button mat-menu-item (click)="logout()">
+            <mat-icon>logout</mat-icon>
+            <span>Logout</span>
+          </button>
+        </mat-menu>
+      </div>
+    </header>
+
+    <!-- Main Content -->
+    <div class="content-wrapper">
+      <router-outlet></router-outlet>
+    </div>
+
+    <!-- Footer -->
+    <footer class="admin-footer">
+      <p>&copy; 2024 Payment Management System. All rights reserved.</p>
+    </footer>
+  </mat-sidenav-content>
+</mat-sidenav-container>

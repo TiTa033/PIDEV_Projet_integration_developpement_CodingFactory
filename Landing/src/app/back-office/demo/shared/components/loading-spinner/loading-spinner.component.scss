@@ -1,0 +1,32 @@
+@import '../../../../@theme/styles/theme-palette-colors.scss';
+@import '../../theme/theme.scss';
+
+.loading-spinner {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+  padding: 2rem;
+  animation: fadeIn 0.5s ease-in-out;
+
+  &.loading-spinner-small {
+    padding: 1rem;
+  }
+
+  &.loading-spinner-large {
+    padding: 3rem;
+  }
+
+  ::ng-deep .mat-mdc-progress-spinner {
+    circle {
+      stroke: var(--primary-500);
+    }
+  }
+
+  .loading-text {
+    color: var(--neutral-600);
+    font-size: 0.875rem;
+    text-align: center;
+  }
+} 
