@@ -1,0 +1,116 @@
+<div class="container py-5">
+  <!-- Loading Spinner -->
+  <div *ngIf="isLoading" class="text-center my-5">
+    <div class="spinner-border text-primary" role="status">
+      <span class="visually-hidden">Loading...</span>
+    </div>
+  </div>
+
+  <!-- Error Message -->
+  <div *ngIf="errorMessage" class="alert alert-danger">
+    {{ errorMessage }}
+  </div>
+
+  <!-- Project Found -->
+  <ng-container *ngIf="project">
+    <div class="card shadow-lg">
+      <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
+        <h5 class="mb-0">🎓 Mon Projet PFE</h5>
+        <span class="badge bg-light text-dark">
+          <strong>Tuteur :</strong> {{ project.tutorName || 'Non assigné' }}
+        </span>
+      </div>
+
+      <div class="card-body">
+        <!-- Project Infos -->
+        <div class="row">
+          <div class="col-md-6">
+            <h6 class="text-muted">📄 Informations Générales</h6>
+            <p><strong>Titre :</strong> {{ project.titre }}</p>
+            <p><strong>Description :</strong> {{ project.description }}</p>
+            <p><strong>Date de soumission :</strong> {{ formatDate(project.dateSoumission) }}</p>
+            <p><strong>Date limite :</strong> {{ formatDate(project.deadline) }}</p>
+            <p>
+              <strong>État :</strong>
+              <span class="badge"
+                [ngClass]="{
+                  'bg-warning text-dark': project.etat === 'EnAttente',
+                  'bg-success': project.etat === 'Approuve',
+                  'bg-danger': project.etat === 'Rejete',
+                  'bg-secondary': project.etat === 'Finalized'
+                }">
+                {{ project.etat }}
+              </span>
+            </p>
+          </div>
+
+          <!-- Plagiarism Scores -->
+          <div class="col-md-6">
+            <h6 class="text-muted">🧠 Score de Plagiat</h6>
+            <p><strong>Global :</strong> {{ project.overallPlagiarismScore ? (project.overallPlagiarismScore | number:'1.2-2') + '%' : 'N/A' }}</p>
+            <p><strong>Image :</strong> {{ project.imagePlagiarismScore ? (project.imagePlagiarismScore | number:'1.2-2') + '%' : 'N/A' }}</p>
+            <p><strong>Texte :</strong> {{ project.textPlagiarismScore ? (project.textPlagiarismScore | number:'1.2-2') + '%' : 'N/A' }}</p>
+          </div>
+        </div>
+
+        <!-- Tasks -->
+        <hr />
+        <div>
+          <h5 class="mb-3">📋 Tâches</h5>
+          <ul class="list-group">
+            <li *ngFor="let task of project.tasks" class="list-group-item d-flex justify-content-between align-items-center">
+              <div>
+                {{ task.description }} <br />
+                <small class="text-muted">Date limite : {{ formatDate(task.deadline) }}</small>
+                <span *ngIf="isTaskOverdue(task)" class="badge bg-danger ms-2">En retard</span>
+              </div>
+              <span>
+                <span *ngIf="task.completed" class="badge bg-success">Terminée</span>
+                <span *ngIf="!task.completed" class="badge bg-warning text-dark">En cours</span>
+              </span>
+            </li>
+          </ul>
+        </div>
+
+        <!-- Upload & Check Buttons -->
+        <hr />
+        <div class="mt-4">
+          <h5>🛠️ Actions</h5>
+          <div class="d-flex flex-wrap gap-2">
+            <input type="file" (change)="onFileSelected($event)" class="form-control w-auto" accept="application/pdf" />
+            <button
+              class="btn btn-outline-info"
+              (click)="checkPlagiarism()"
+              [disabled]="isLoading || !selectedFile || project.etat === 'Finalized'"
+            >
+              <span *ngIf="isLoading" class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
+              {{ isLoading ? 'Analyse...' : 'Vérifier le plagiat' }}
+            </button>
+            <button
+              class="btn btn-outline-primary"
+              (click)="uploadReport(project.id!)"
+              [disabled]="isLoading || !selectedFile || project.etat === 'Finalized'"
+            >
+              <span *ngIf="isLoading" class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
+              {{ isLoading ? 'Téléversement...' : 'Uploader le rapport' }}
+            </button>
+          </div>
+        </div>
+
+        <!-- Plagiarism Result -->
+        <div *ngIf="plagiarismResult" class="alert alert-info mt-4">
+          <h6 class="mb-2">🧾 Résultat de l’analyse de plagiat</h6>
+          <p>Global : {{ plagiarismResult.overallScore | number:'1.2-2' }}%</p>
+          <p>Image : {{ plagiarismResult.imageScore | number:'1.2-2' }}%</p>
+          <p>Texte : {{ plagiarismResult.textScore | number:'1.2-2' }}%</p>
+          <p><strong>Message :</strong> {{ plagiarismResult.message }}</p>
+        </div>
+      </div>
+    </div>
+  </ng-container>
+
+  <!-- No Project Found -->
+  <div *ngIf="!project && !isLoading" class="alert alert-warning mt-5 text-center">
+    Aucun projet PFE trouvé pour cet étudiant.
+  </div>
+</div>

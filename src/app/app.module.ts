@@ -18,6 +18,9 @@ import { ScrollSpyModule } from 'ngx-scrollspy';
 import { CommonModule } from '@angular/common';
 import { ScrollToModule } from '@nicky-lenaers/ngx-scroll-to';
 import {ProfileComponent} from "./pages/profile/profile.component";
+import { NgChartsModule } from 'ng2-charts';
+import {EvaluationComponent} from "./shared/evaluation/evaluation.component";
+
 
 
 //export function kcFactory(kcService: KeycloakService) {
@@ -42,7 +45,9 @@ import {ProfileComponent} from "./pages/profile/profile.component";
     HeaderComponent,   // ✅ Ensure these components exist
     FooterComponent,
     ScrollToModule.forRoot(), // Ensure it's registered properly
-    HttpClientModule
+    HttpClientModule,
+    NgChartsModule
+
 
 
   ],

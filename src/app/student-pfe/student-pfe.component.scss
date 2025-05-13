@@ -1,0 +1,29 @@
+.card {
+  border: none;
+  border-radius: 1rem;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+}
+
+.card-header {
+  background: linear-gradient(135deg, #007bff, #0056b3);
+  color: white;
+  border-bottom: none;
+  padding: 1rem 1.25rem;
+}
+
+.list-group-item {
+  border: none;
+  border-radius: 0.5rem;
+  background-color: #f8f9fa;
+  margin-bottom: 0.5rem;
+}
+
+.alert-info {
+  background-color: #e8f4ff;
+  border: 1px solid #bee3f8;
+}
+
+.btn-outline-info:hover {
+  background-color: #0dcaf0;
+  color: white;
+}

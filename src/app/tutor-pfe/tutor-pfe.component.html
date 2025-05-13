@@ -1,0 +1,74 @@
+<!-- Projects List -->
+<div *ngIf="projects.length > 0" class="card shadow-lg border-0">
+  <div class="card-header bg-primary text-white">
+    <i class="bi bi-person-video3 me-2"></i>
+    Tutor Dashboard (Tutor ID: {{ tutorId }})
+  </div>
+  <div class="card-body">
+    <h5 class="mb-3"><i class="bi bi-journal-bookmark me-2"></i>Student Projects</h5>
+    <ul class="list-group mb-4">
+      <li *ngFor="let project of projects" class="list-group-item list-group-item-action"
+          (click)="selectProject(project)"
+          [class.active]="selectedProject?.id === project.id">
+        <i class="bi bi-person me-2"></i>
+        <strong>{{ project.studentName }}</strong> – {{ project.titre }}
+        <span class="badge float-end bg-secondary">{{ project.etat }}</span>
+      </li>
+    </ul>
+
+    <!-- Selected Project Details -->
+    <div *ngIf="selectedProject">
+      <h5><i class="bi bi-info-circle me-2"></i>Project Details</h5>
+      <div class="card border-0 shadow-sm">
+        <div class="card-body">
+          <p><i class="bi bi-person-fill"></i> <strong>Student:</strong> {{ selectedProject.studentName }}</p>
+          <p><i class="bi bi-file-earmark-text"></i> <strong>Title:</strong> {{ selectedProject.titre }}</p>
+          <p><i class="bi bi-chat-square-text"></i> <strong>Description:</strong> {{ selectedProject.description }}</p>
+          <p><i class="bi bi-calendar-check"></i> <strong>Submission Date:</strong> {{ formatDate(selectedProject.dateSoumission) }}</p>
+          <p><i class="bi bi-calendar-event"></i> <strong>Deadline:</strong> {{ formatDate(selectedProject.deadline) }}</p>
+          <p><i class="bi bi-check-circle"></i> <strong>Status:</strong> {{ selectedProject.etat }}</p>
+          <p><i class="bi bi-percent"></i> <strong>Overall Plagiarism:</strong>
+            {{ selectedProject.overallPlagiarismScore ? (selectedProject.overallPlagiarismScore | number:'1.2-2') + '%' : 'N/A' }}</p>
+
+          <!-- Tasks -->
+          <div class="mt-4">
+            <h6><i class="bi bi-list-task me-1"></i>Tasks</h6>
+            <ul class="list-group">
+              <li *ngFor="let task of selectedProject.tasks" class="list-group-item d-flex justify-content-between">
+                <span>{{ task.description }} (Deadline: {{ formatDate(task.deadline) }})</span>
+                <span>
+                  <span *ngIf="isTaskOverdue(task)" class="badge bg-danger">Overdue</span>
+                  <span *ngIf="task.completed" class="badge bg-success">Completed</span>
+                  <span *ngIf="!task.completed && !isTaskOverdue(task)" class="badge bg-warning">Pending</span>
+                </span>
+              </li>
+            </ul>
+          </div>
+
+          <!-- Timeline -->
+          <div class="mt-4">
+            <h6><i class="bi bi-clock-history me-1"></i>Timeline</h6>
+            <ul class="list-group">
+              <li *ngFor="let event of selectedProject.events" class="list-group-item">
+                <i class="bi bi-calendar me-2"></i>{{ formatDate(event.date) }} – <strong>{{ event.type }}</strong>: {{ event.description }}
+              </li>
+            </ul>
+          </div>
+
+          <!-- Evaluate Project -->
+          <div class="mt-4">
+            <h6><i class="bi bi-star-half me-1"></i>Evaluate Project</h6>
+            <select [(ngModel)]="newState" class="form-select w-auto d-inline-block me-2">
+              <option *ngFor="let etat of getEtat()" [value]="etat">{{ etat }}</option>
+            </select>
+            <button class="btn btn-outline-primary btn-sm" (click)="evaluateProject(selectedProject.id!)"
+                    [disabled]="isLoading || !newState">
+              <span *ngIf="isLoading" class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+              {{ isLoading ? 'Evaluating...' : 'Evaluate' }}
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

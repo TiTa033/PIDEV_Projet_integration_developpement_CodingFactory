@@ -1,9 +1,88 @@
-.font-size {
-  padding-left: 0px;
-  li {
-    list-style: none;
-  }
-  .separate {
-    margin: 0px 8px;
-  }
+/* Style pour les cartes avec bordure */
+.custom-card {
+  background-color: #ffffff;
+  border: 2px solid #e0e0e0; /* Ajout d'une bordure plus fine */
+  border-radius: 6px; /* Coins légèrement arrondis */
+  overflow: hidden;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+/* Réduire l'espacement des éléments à l'intérieur de la carte */
+.color-block {
+  padding: 16px;
+}
+
+/* Réduire l'espacement entre les lignes */
+.color-code {
+  padding: 8px 0;
+  border-bottom: 1px solid #f0f0f0;
+}
+
+.color-code-inner {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.mat-caption {
+  font-size: 0.8rem; /* Police plus petite */
+  color: #6c757d;
+}
+
+.mat-body {
+  font-size: 0.9rem; /* Police plus petite */
+  color: #495057;
+}
+
+/* Style pour les boutons plus petits */
+.btn-sm {
+  font-size: 0.8rem; /* Réduire la taille des boutons */
+  padding: 6px 12px;
+  transition: all 0.3s ease;
+}
+
+.btn-sm:hover {
+  opacity: 0.85;
+}
+
+/* Espacements et alignement */
+.text-end {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.text-center {
+  text-align: center;
+}
+
+.mb-4 {
+  margin-bottom: 1.25rem; /* Espacement réduit entre les éléments */
+}
+
+.mb-2 {
+  margin-bottom: 0.75rem; /* Espacement plus petit entre les lignes */
+}
+
+/* Mettre les éléments dans une grille responsive */
+.row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+}
+
+.col-md-4 {
+  flex: 1 0 30%;
+  max-width: 30%; /* Réduire la largeur des cartes */
+}
+
+/* Ajouter des bordures arrondies et des ombres légères */
+.custom-card {
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Ombre légèrement plus marquée */
+}
+
+/* Style pour les icônes Bootstrap */
+@import url('https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css');
+.bi {
+  margin-right: 6px; /* Réduire l'espace autour des icônes */
 }

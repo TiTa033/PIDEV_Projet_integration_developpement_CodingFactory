@@ -1,0 +1,12 @@
+.larger-logo {
+  height: 150px; /* Makes the image 50 times bigger */
+  -webkit-text-stroke: 2px rgba(255, 255, 255, 0.8); /* White outline */
+  color: black; /* Ensure logo text is dark enough to stand out */}
+.logo-background {
+  display: inline-block;
+  padding: 20px;
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.6), rgba(200, 200, 200, 0.4)); /* Soft gradient */
+  border-radius: 15px;
+  box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+}
+

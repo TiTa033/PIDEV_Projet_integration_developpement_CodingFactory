@@ -21,15 +21,24 @@ import { AboutComponent } from './about/about.component';
 import { CtaComponent } from './cta/cta.component';
 import { BlogComponent } from './blog/blog.component';
 import { ContactComponent } from './contact/contact.component';
+import {NgChartsModule} from "ng2-charts";
+import {EvaluationComponent} from "./evaluation/evaluation.component";
+import {FullCalendarModule} from "@fullcalendar/angular";
+import {CertificationComponent} from "./certification/certification.component";
+import {CoursesComponent} from "./courses/courses.component";
+import {RouterLink} from "@angular/router";
 
 
 
 @NgModule({
   declarations: [
+
+    EvaluationComponent,
+    CoursesComponent,
+    CertificationComponent,
     FeaturesComponent,
     ProcessComponent,
     ClientsComponent,
-    PricingComponent,
     FaqComponent,
     AboutComponent,
     CtaComponent,
@@ -38,19 +47,27 @@ import { ContactComponent } from './contact/contact.component';
 
   ],
   imports: [
+    NgChartsModule,
     ContactComponent,
     CommonModule,
     ModalModule,
     SlickCarouselModule,
     CountUpModule,
     FormsModule,
-    ReactiveFormsModule
+    ReactiveFormsModule,
+    FullCalendarModule,
+    RouterLink,
+
+
   ],
   exports:[
+    CertificationComponent,
+    CoursesComponent,
+    EvaluationComponent,
     FeaturesComponent,
     ProcessComponent,
     ClientsComponent,
-    PricingComponent,
+
     FaqComponent,
     AboutComponent,
     CtaComponent,

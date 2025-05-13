@@ -1,0 +1,124 @@
+<section class="section bg-client bg-light" id="eval">
+  <div class="container">
+    <!-- Calendar and Evaluations Timeline -->
+    <div class="calendar-container">
+      <div class="calendar-wrapper">
+        <full-calendar [options]="calendarOptions"></full-calendar>
+      </div>
+      <div class="evaluations-timeline">
+        <div class="timeline-section">
+          <h3>Évaluations à venir</h3>
+          <div class="timeline-list">
+            <div *ngFor="let eval of upcomingEvaluations" class="timeline-item upcoming">
+              <div class="timeline-date">{{ getSafeDate(eval.dateEvaluation) | date:'shortDate' }}</div>
+              <div class="timeline-content">
+                <div class="timeline-subject">{{ eval.sujet }}</div>
+                <div class="timeline-location">{{ eval.location || 'Non spécifié' }}</div>
+              </div>
+            </div>
+            <div *ngIf="!upcomingEvaluations?.length" class="no-evaluations">
+              Aucune évaluation à venir
+            </div>
+          </div>
+        </div>
+
+        <div class="timeline-section">
+          <h3>Évaluations terminées</h3>
+          <div class="timeline-list">
+            <div *ngFor="let eval of completedEvaluations" class="timeline-item completed">
+              <div class="timeline-date">{{ getSafeDate(eval.dateEvaluation) | date:'shortDate' }}</div>
+              <div class="timeline-content">
+                <div class="timeline-subject">{{ eval.sujet }}</div>
+                <div *ngIf="eval.note !== null" class="timeline-note" [ngClass]="{
+                  'high-score': eval.note > 15,
+                  'mid-score': eval.note > 10 && eval.note <= 15,
+                  'low-score': eval.note <= 10
+                }">
+                  Note: {{ eval.note }}
+                </div>
+              </div>
+            </div>
+            <div *ngIf="!completedEvaluations?.length" class="no-evaluations">
+              Aucune évaluation terminée
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Interactive Map -->
+    <div class="map-container">
+      <div id="map-title">Localisation des évaluations à venir</div>
+      <div id="map"></div>
+    </div>
+
+    <!-- Liste des évaluations -->
+    <div class="evaluation-table">
+      <h3>Historique des Évaluations</h3>
+      <table>
+        <thead>
+        <tr>
+          <th>Sujet</th>
+          <th>Note</th>
+          <th>Date</th>
+          <th>Lieu</th>
+          <th>Statut</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr *ngFor="let evaluation of evaluations">
+          <td>{{ evaluation.sujet }}</td>
+          <td>
+              <span *ngIf="evaluation.note !== null" class="note-icon" [ngClass]="{
+                'high-score': evaluation.note > 15,
+                'mid-score': evaluation.note > 10 && evaluation.note <= 15,
+                'low-score': evaluation.note <= 10
+              }">
+                {{ evaluation.note }}
+              </span>
+            <span *ngIf="evaluation.note === null" class="note-icon pending">À venir</span>
+          </td>
+          <td>{{ getSafeDate(evaluation.dateEvaluation) | date:'mediumDate' }}</td>
+          <td>{{ evaluation.location || 'Non spécifié' }}</td>
+          <td>
+              <span [ngClass]="{
+                'status-completed': evaluation.note !== null,
+                'status-upcoming': evaluation.note === null
+              }">
+                {{ evaluation.note !== null ? 'Terminée' : 'À venir' }}
+              </span>
+          </td>
+        </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Detailed Modal for Evaluation -->
+    <div class="modal" *ngIf="selectedEvaluation" (click)="closeModal()">
+      <div class="modal-content" (click)="$event.stopPropagation()">
+        <div class="modal-header">
+          <h3>Détails de l'Évaluation</h3>
+          <button class="close-btn" (click)="closeModal()">×</button>
+        </div>
+        <div class="modal-body">
+          <p><strong>Sujet:</strong> {{ selectedEvaluation.sujet }}</p>
+          <p><strong>Date:</strong> {{ getSafeDate(selectedEvaluation.dateEvaluation) | date:'fullDate' }}</p>
+          <p><strong>Lieu:</strong> {{ selectedEvaluation.location || 'Non spécifié' }}</p>
+          <p *ngIf="selectedEvaluation.note !== null">
+            <strong>Note:</strong>
+            <span [ngClass]="{
+              'high-score': selectedEvaluation.note > 15,
+              'mid-score': selectedEvaluation.note > 10 && selectedEvaluation.note <= 15,
+              'low-score': selectedEvaluation.note <= 10
+            }">
+              {{ selectedEvaluation.note }}
+            </span>
+          </p>
+          <p *ngIf="selectedEvaluation.note === null">
+            <strong>Statut:</strong> <span class="status-upcoming">À venir</span>
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>

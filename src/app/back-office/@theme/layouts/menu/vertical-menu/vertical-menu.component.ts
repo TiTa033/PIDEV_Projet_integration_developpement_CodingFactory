@@ -8,6 +8,9 @@ import { SharedModule } from 'src/app/back-office/demo/shared/shared.module';
 import { MenuItemComponent } from './menu-item/menu-item.component';
 import { MenuCollapseComponent } from './menu-collapse/menu-collapse.component';
 import { MenuGroupVerticalComponent } from './menu-group/menu-group.component';
+import {AuthService} from "../../../../../services/auth.service";
+import {CandidatureService} from "../../../../../services/candidature.service";
+import {UserService} from "../../../../../services/user.service";
 
 @Component({
   selector: 'app-vertical-menu',
@@ -19,10 +22,21 @@ import { MenuGroupVerticalComponent } from './menu-group/menu-group.component';
 export class VerticalMenuComponent {
   private location = inject(Location);
   private locationStrategy = inject(LocationStrategy);
+  username:string=''
 
   // public props
   menus = input.required<NavigationItem[]>();
+  profileImage: string=''
+  constructor( private userService: UserService) {}
 
+  ngOnInit(): void {
+    this.loadProfileImage();
+    this.loadUsername();
+    const storedImage = this.getProfileImage();
+    if (storedImage) {
+      this.profileImage = storedImage;
+    }
+  }
   // public method
   fireOutClick() {
     let current_url = this.location.path();
@@ -67,4 +81,28 @@ export class VerticalMenuComponent {
       title: 'Logout'
     }
   ];
+
+  loadUsername(): void {
+    const storedUsername = localStorage.getItem('username');
+    if (storedUsername) {
+      this.username = storedUsername; // ✅ Set username if available
+    }
+  }
+  getProfileImage(): string | null {
+    return localStorage.getItem('profileImage'); // ✅ Retrieve profile image
+  }
+  loadProfileImage(): void {
+    const userId = this.userService.getUserId();
+    if (userId) {
+      this.userService.getProfileImage(userId).subscribe({
+        next: (imageUrl: string) => {
+          this.profileImage = imageUrl;
+          localStorage.setItem('profileImage', imageUrl); // ✅ Save for reuse
+        },
+        error: (err) => {
+          console.error('❌ Failed to load profile image:', err);
+        }
+      });
+    }
+  }
 }

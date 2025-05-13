@@ -1,100 +1,621 @@
 <!-- START PRICING -->
 <section class="section bg-light" id="price">
-    <div class="container">
-        <div class="row justify-content-center">
-            <div class="col-lg-6">
-                <div class="text-center mb-4">
-                    <h3>Our Pricing</h3>
-                    <p class="text-muted mt-2">It is a long established fact that a reader will be of a page when
-                        established fact looking at its layout.</p>
-                </div>
+  <div class="container">
+    <!-- Payment Modal -->
+    <div class="modal fade" [class.show]="showPaymentModal" [style.display]="showPaymentModal ? 'block' : 'none'">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title">Complete Payment</h5>
+            <button type="button" class="btn-close" (click)="closePaymentModal()"></button>
+          </div>
+          <div class="modal-body">
+            <div class="mb-3">
+              <label class="form-label">Amount to Pay</label>
+              <div class="h4 mb-3">${{selectedPayment?.amount}}</div>
             </div>
-            <!--end col-->
+            <div class="mb-3">
+              <label class="form-label">Card Details</label>
+              <div id="card-element" #cardElement class="form-control"></div>
+              <div *ngIf="paymentError" class="text-danger mt-2">{{ paymentError }}</div>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" (click)="closePaymentModal()">Cancel</button>
+            <button type="button" class="btn btn-primary"
+                    [disabled]="processingPayment"
+                    (click)="confirmPayment()">
+              <span *ngIf="processingPayment" class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
+              {{ processingPayment ? 'Processing...' : 'Pay Now' }}
+            </button>
+          </div>
         </div>
-        <!--end row-->
-        <div class="row">
-            <div class="col-md-6 col-lg-4">
-                <div class="price-box card border-0 mt-4">
-                    <div class="text-center">
-                        <h5 class="mb-0">Starter</h5>
-                    </div>
-                    <div class="plan-price text-center mt-4">
-                        <h1 class="text-primary mb-0 display-4 fw-medium"><sup>$</sup>9<sub class="text-muted">/month</sub></h1>
-                    </div>
-                    <div class="price-features mt-5">
-                        <p><i class="mdi mdi-check text-primary"></i> Bandwidth: <span class="fw-medium float-end">1GB</span></p>
-                        <p><i class="mdi mdi-check text-primary"></i> Onlinespace: <span class="fw-medium float-end">500MB</span></p>
-                        <p><i class="mdi mdi-close text-primary"></i> Support: <span class="fw-medium float-end">No</span></p>
-                        <p><i class="mdi mdi-check text-primary"></i> Domain: <span class="fw-medium float-end">1</span> </p>
-                        <p><i class="mdi mdi-check text-primary"></i> Hidden Fees: <span class="fw-medium float-end">No</span></p>
-                    </div>
-                    <div class="text-center mt-4">
-                        <a href="javascript: void(0);" class="btn btn-outline-primary w-100">Join Now</a>
-                    </div>
-                </div>
-                <!--end pricing-box-->
-            </div>
-            <!--end col-->
-            <div class="col-md-6 col-lg-4">
-                <div class="price-box card border-0 mt-4">
-                    <div class="ribbon">20% sale</div>
-                    <div class="text-center">
-                        <h5 class="mb-0">Advanced</h5>
-                    </div>
-                    <div class="plan-price text-center mt-4">
-                        <h1 class="text-primary mb-0 display-4 fw-medium"><sup>$</sup>19<sub
-                                class="text-muted">/month</sub></h1>
-                    </div>
-                    <div class="price-features mt-5">
-                        <p><i class="mdi mdi-check text-primary"></i> Bandwidth: <span
-                                class="fw-medium float-end">2GB</span></p>
-                        <p><i class="mdi mdi-check text-primary"></i> Onlinespace: <span
-                                class="fw-medium float-end">1GB</span></p>
-                        <p><i class="mdi mdi-check text-primary"></i> Support: <span
-                                class="fw-medium float-end">Yes</span></p>
-                        <p><i class="mdi mdi-check text-primary"></i> Domain: <span
-                                class="fw-medium float-end">3</span> </p>
-                        <p><i class="mdi mdi-check text-primary"></i> Hidden Fees: <span
-                                class="fw-medium float-end">No</span></p>
-                    </div>
-                    <div class="text-center mt-4">
-                        <a href="javascript: void(0);" class="btn btn-primary w-100">Join Now</a>
-                    </div>
-                </div>
-                <!--end pricing-box-->
-            </div>
-            <!--end col-->
-            <div class="col-md-6 col-lg-4">
-                <div class="price-box card border-0 mt-4">
-                    <div class="text-center">
-                        <h5 class="mb-0">Professional</h5>
-                    </div>
-                    <div class="plan-price text-center mt-4">
-                        <h1 class="text-primary mb-0 display-4 fw-medium"><sup>$</sup>29<sub
-                                class="text-muted">/month</sub></h1>
-                    </div>
-                    <div class="price-features mt-5">
-                        <p><i class="mdi mdi-check text-primary"></i> Bandwidth: <span
-                                class="fw-medium float-end">3GB</span></p>
-                        <p><i class="mdi mdi-check text-primary"></i> Onlinespace: <span
-                                class="fw-medium float-end">2GB</span></p>
-                        <p><i class="mdi mdi-check text-primary"></i> Support: <span
-                                class="fw-medium float-end">Yes</span></p>
-                        <p><i class="mdi mdi-check text-primary"></i> Domain: <span
-                                class="fw-medium float-end">Unlimited</span></p>
-                        <p><i class="mdi mdi-check text-primary"></i> Hidden Fees: <span
-                                class="fw-medium float-end">No</span></p>
-                    </div>
-                    <div class="text-center mt-4">
-                        <a href="javascript: void(0);" class="btn btn-outline-primary w-100">Join Now</a>
-                    </div>
-                </div>
-                <!--end pricing-box-->
-            </div>
-            <!--end col-->
-        </div>
-        <!--end row-->
+      </div>
     </div>
-    <!--end container-->
+
+    <!-- Header Section -->
+    <div class="row justify-content-center mb-4">
+      <div class="col-lg-8">
+        <div class="text-center">
+          <h3>Payment Management</h3>
+          <p class="text-muted mt-2">Manage your payment transactions efficiently.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Action Buttons -->
+    <div class="d-flex justify-content-between align-items-center mb-4">
+      <h3 class="mb-0">Payment Management</h3>
+      <div>
+        <button class="btn btn-primary me-2" (click)="showAnalytics = !showAnalytics">
+          <i class="mdi mdi-chart-bar"></i> Analytics
+        </button>
+        <button class="btn btn-info me-2" (click)="showExportOptions = !showExportOptions">
+          <i class="mdi mdi-file-export"></i> Export
+        </button>
+        <button class="btn btn-success" routerLink="/invoices/create">
+          <i class="mdi mdi-file-document-plus"></i> Create Invoice
+        </button>
+      </div>
+    </div>
+
+    <!-- Statistics Cards -->
+    <div class="row mb-4">
+      <div class="col-md-3">
+        <div class="card bg-primary text-white">
+          <div class="card-body">
+            <h5 class="card-title">Total Payments</h5>
+            <h2 class="mb-0">{{getPaymentStats().total}}</h2>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-3">
+        <div class="card bg-success text-white">
+          <div class="card-body">
+            <h5 class="card-title">Completed</h5>
+            <h2 class="mb-0">{{getPaymentStats().completed}}</h2>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-3">
+        <div class="card bg-warning text-white">
+          <div class="card-body">
+            <h5 class="card-title">Pending</h5>
+            <h2 class="mb-0">{{getPaymentStats().pending}}</h2>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-3">
+        <div class="card bg-danger text-white">
+          <div class="card-body">
+            <h5 class="card-title">Failed</h5>
+            <h2 class="mb-0">{{getPaymentStats().failed}}</h2>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Enhanced Analytics Section -->
+    <div class="row mb-4" *ngIf="showAnalytics">
+      <div class="col-md-12">
+        <div class="card">
+          <div class="card-body">
+            <h5 class="card-title">Payment Analytics</h5>
+            <div class="row">
+              <div class="col-md-6">
+                <div class="card mb-3">
+                  <div class="card-body">
+                    <h6>Total Revenue</h6>
+                    <h2>${{analytics.totalAmount}}</h2>
+                    <p class="text-muted">Average: ${{analytics.averageAmount}}</p>
+                  </div>
+                </div>
+                <div class="card">
+                  <div class="card-body">
+                    <h6>Monthly Payment Trends</h6>
+                    <canvas baseChart
+                            [data]="lineChartData"
+                            [options]="lineChartOptions"
+                            [type]="'line'">
+                    </canvas>
+                  </div>
+                </div>
+              </div>
+              <div class="col-md-6">
+                <div class="card mb-3">
+                  <div class="card-body">
+                    <h6>Payment Methods Distribution</h6>
+                    <canvas baseChart
+                            [data]="pieChartData"
+                            [options]="pieChartOptions"
+                            [type]="'pie'">
+                    </canvas>
+                  </div>
+                </div>
+                <div class="card">
+                  <div class="card-body">
+                    <h6>Daily Payments</h6>
+                    <canvas baseChart
+                            [data]="barChartData"
+                            [options]="barChartOptions"
+                            [type]="'bar'">
+                    </canvas>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Enhanced Export Options -->
+    <div class="row mb-4" *ngIf="showExportOptions">
+      <div class="col-md-12">
+        <div class="card">
+          <div class="card-body">
+            <h5 class="card-title">Export Payments</h5>
+            <div class="row g-3">
+              <div class="col-md-3">
+                <select class="form-select" [(ngModel)]="exportFormat">
+                  <option value="excel">Excel (.xlsx)</option>
+                  <option value="csv">CSV (.csv)</option>
+                  <option value="pdf">PDF (.pdf)</option>
+                </select>
+              </div>
+              <div class="col-md-3">
+                <select class="form-select" [(ngModel)]="exportOptions.dateRange">
+                  <option value="week">Last Week</option>
+                  <option value="month">Last Month</option>
+                  <option value="year">Last Year</option>
+                  <option value="all">All Time</option>
+                </select>
+              </div>
+              <div class="col-md-6">
+                <div class="form-check form-check-inline">
+                  <input class="form-check-input" type="checkbox"
+                         [(ngModel)]="exportOptions.includeHistory">
+                  <label class="form-check-label">Include History</label>
+                </div>
+                <div class="form-check form-check-inline">
+                  <input class="form-check-input" type="checkbox"
+                         [(ngModel)]="exportOptions.includeNotes">
+                  <label class="form-check-label">Include Notes</label>
+                </div>
+                <div class="form-check form-check-inline">
+                  <input class="form-check-input" type="checkbox"
+                         [(ngModel)]="exportOptions.includeAttachments">
+                  <label class="form-check-label">Include Attachments</label>
+                </div>
+              </div>
+              <div class="col-md-12">
+                <button class="btn btn-primary" (click)="exportPayments()">
+                  Export Payments
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Filter and Search Section -->
+    <div class="row mb-4">
+      <div class="col-md-12">
+        <div class="card">
+          <div class="card-body">
+            <div class="row g-3">
+              <div class="col-md-3">
+                <input type="text" class="form-control" placeholder="Search payments..."
+                       [(ngModel)]="searchTerm" (input)="applyFilters()">
+              </div>
+              <div class="col-md-2">
+                <select class="form-select" [(ngModel)]="statusFilter" (change)="applyFilters()">
+                  <option value="ALL">All Status</option>
+                  <option value="COMPLETED">Completed</option>
+                  <option value="PENDING">Pending</option>
+                  <option value="FAILED">Failed</option>
+                </select>
+              </div>
+              <div class="col-md-2">
+                <select class="form-select" [(ngModel)]="methodFilter" (change)="applyFilters()">
+                  <option value="ALL">All Methods</option>
+                  <option value="CARD">Card</option>
+                  <option value="BANK">Bank</option>
+                  <option value="CASH">Cash</option>
+                </select>
+              </div>
+              <div class="col-md-3">
+                <select class="form-select" [(ngModel)]="sortBy" (change)="applyFilters()">
+                  <option value="date">Sort by Date</option>
+                  <option value="amount">Sort by Amount</option>
+                  <option value="status">Sort by Status</option>
+                </select>
+              </div>
+              <div class="col-md-2">
+                <button class="btn btn-primary w-100" (click)="showPaymentForm = true">
+                  New Payment
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Enhanced Payment Form -->
+    <div class="row mb-4" *ngIf="showPaymentForm">
+      <div class="col-md-12">
+        <div class="card">
+          <div class="card-body">
+            <h5 class="card-title">Create New Payment</h5>
+            <div class="payment-form">
+              <form (ngSubmit)="createPayment()">
+                <div class="row">
+                  <div class="col-md-6">
+                    <div class="form-group">
+                      <label for="amount">Amount</label>
+                      <input type="number" class="form-control" id="amount" [(ngModel)]="newPayment.amount" name="amount" required>
+                    </div>
+                  </div>
+                  <div class="col-md-6">
+                    <div class="form-group">
+                      <label for="method">Payment Method</label>
+                      <select class="form-control" id="method" [(ngModel)]="newPayment.method" name="method" required>
+                        <option value="CARD">Credit Card</option>
+                        <option value="BANK">Bank Transfer</option>
+                        <option value="CASH">Cash</option>
+                      </select>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="row mt-3">
+                  <div class="col-md-6">
+                    <div class="form-group">
+                      <label for="paymentDate">Payment Date</label>
+                      <input type="date" class="form-control" id="paymentDate" [(ngModel)]="newPayment.paymentDate" name="paymentDate" required>
+                    </div>
+                  </div>
+                  <div class="col-md-6">
+                    <div class="form-group">
+                      <label for="dueDate">Due Date</label>
+                      <input type="date" class="form-control" id="dueDate" [(ngModel)]="newPayment.dueDate" name="dueDate" required>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="row mt-3">
+                  <div class="col-12">
+                    <button type="submit" class="btn btn-primary" [disabled]="processingPayment">
+                      <span *ngIf="processingPayment" class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
+                      {{ processingPayment ? 'Processing...' : 'Create Payment' }}
+                    </button>
+                    <button type="button" class="btn btn-secondary ms-2" (click)="showPaymentForm = false">Cancel</button>
+                  </div>
+                </div>
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Loading State -->
+    <div *ngIf="loading" class="text-center">
+      <div class="spinner-border text-primary" role="status">
+        <span class="visually-hidden">Loading...</span>
+      </div>
+      <p class="mt-2">Loading payments...</p>
+    </div>
+
+    <!-- Error State -->
+    <div *ngIf="error" class="alert alert-danger text-center">
+      {{error}}
+    </div>
+
+    <!-- Empty State -->
+    <div *ngIf="!loading && !error && filteredPayments.length === 0" class="text-center">
+      <p class="text-muted">No payments found matching your criteria.</p>
+    </div>
+
+    <!-- Payment Cards -->
+    <div class="row">
+      <div *ngFor="let payment of filteredPayments" class="col-md-6 col-lg-4">
+        <div class="price-box card border-0 mt-4">
+          <div class="text-center">
+            <h5 class="mb-0">Payment #{{payment.id}}</h5>
+          </div>
+          <div class="plan-price text-center mt-4">
+            <h1 class="text-primary mb-0 display-4 fw-medium">
+              <sup>$</sup>{{payment.amount}}<sub class="text-muted">/month</sub>
+            </h1>
+          </div>
+          <div class="payment-details mt-4 p-3 bg-light rounded">
+            <div class="d-flex justify-content-between mb-2">
+              <span>Method:</span>
+              <span class="fw-medium">
+                                <i [class]="getMethodIcon(payment.method)"></i> {{payment.method}}
+                            </span>
+            </div>
+            <div class="d-flex justify-content-between mb-2">
+              <span>Status:</span>
+              <span [class]="getStatusBadgeClass(payment.status)">
+                                {{payment.status}}
+                            </span>
+            </div>
+            <div class="d-flex justify-content-between mb-2">
+              <span>Payment Date:</span>
+              <span class="fw-medium">{{payment.paymentDate}}</span>
+            </div>
+            <div class="d-flex justify-content-between">
+              <span>Due Date:</span>
+              <span class="fw-medium">{{payment.dueDate}}</span>
+            </div>
+          </div>
+          <div class="text-center mt-4">
+            <button (click)="viewPaymentDetails(payment)" class="btn btn-info w-100 mb-2">
+              View Details
+            </button>
+            <button *ngIf="payment.status === 'PENDING'"
+                    (click)="processPayment(payment)"
+                    class="btn btn-primary w-100">
+              Process Payment
+            </button>
+            <button *ngIf="payment.status !== 'PENDING'"
+                    class="btn btn-outline-secondary w-100"
+                    disabled>
+              Payment {{payment.status}}
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Enhanced Payment Details Modal -->
+    <div class="modal fade" [class.show]="showPaymentDetails" [style.display]="showPaymentDetails ? 'block' : 'none'">
+      <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title">Payment Details #{{selectedPayment?.id}}</h5>
+            <button type="button" class="btn-close" (click)="showPaymentDetails = false"></button>
+          </div>
+          <div class="modal-body" *ngIf="selectedPayment">
+            <div class="row">
+              <div class="col-md-6">
+                <div class="card mb-3">
+                  <div class="card-body">
+                    <h6 class="card-title">Payment Information</h6>
+                    <div class="d-flex justify-content-between mb-2">
+                      <span>Amount:</span>
+                      <span class="fw-medium">${{selectedPayment.amount}}</span>
+                    </div>
+                    <div class="d-flex justify-content-between mb-2">
+                      <span>Method:</span>
+                      <span class="fw-medium">
+                                                <i [class]="getPaymentMethodDetails(selectedPayment.method).icon"></i>
+                        {{getPaymentMethodDetails(selectedPayment.method).description}}
+                                            </span>
+                    </div>
+                    <div class="d-flex justify-content-between mb-2">
+                      <span>Status:</span>
+                      <span [class]="getStatusBadgeClass(selectedPayment.status)">
+                                                {{selectedPayment.status}}
+                                            </span>
+                    </div>
+                    <div class="d-flex justify-content-between mb-2">
+                      <span>Payment Date:</span>
+                      <span class="fw-medium">{{selectedPayment.paymentDate}}</span>
+                    </div>
+                    <div class="d-flex justify-content-between">
+                      <span>Due Date:</span>
+                      <span class="fw-medium">{{selectedPayment.dueDate}}</span>
+                    </div>
+                  </div>
+                </div>
+                <div class="card mb-3">
+                  <div class="card-body">
+                    <h6 class="card-title">Add Note</h6>
+                    <form (ngSubmit)="addPaymentNote()">
+                      <div class="mb-3">
+                                                <textarea class="form-control" [(ngModel)]="paymentNotes"
+                                                          name="notes" rows="3" placeholder="Add a note..."></textarea>
+                      </div>
+                      <button type="submit" class="btn btn-primary">Add Note</button>
+                    </form>
+                  </div>
+                </div>
+                <div class="card">
+                  <div class="card-body">
+                    <h6 class="card-title">Attachments</h6>
+                    <input type="file" class="form-control mb-3" multiple
+                           (change)="handleFileUpload($event)">
+                    <div *ngFor="let file of paymentAttachments" class="mb-2">
+                      <span class="badge bg-secondary">{{file.name}}</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="col-md-6">
+                <div class="card mb-3">
+                  <div class="card-body">
+                    <h6 class="card-title">Payment History</h6>
+                    <div class="timeline">
+                      <div *ngFor="let history of paymentHistory" class="timeline-item">
+                        <div class="timeline-badge" [class]="getPaymentStatusClass(history.status)"></div>
+                        <div class="timeline-content">
+                          <div class="d-flex justify-content-between">
+                            <h6 class="mb-1">{{history.status}}</h6>
+                            <small class="text-muted">{{history.date}}</small>
+                          </div>
+                          <p class="mb-1">{{history.description}}</p>
+                          <div *ngIf="history.amount" class="small text-muted">
+                            Amount: ${{history.amount}} | Method: {{history.method}}
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="card">
+                  <div class="card-body">
+                    <h6 class="card-title">Set Reminder</h6>
+                    <div class="mb-3">
+                      <label class="form-label">Days before due date</label>
+                      <input type="number" class="form-control" [(ngModel)]="reminderDays"
+                             name="reminderDays" min="1" max="30">
+                    </div>
+                    <button class="btn btn-warning" (click)="setPaymentReminder()">
+                      Set Reminder
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" (click)="showPaymentDetails = false">Close</button>
+            <button *ngIf="selectedPayment?.status === 'PENDING'"
+                    type="button"
+                    class="btn btn-primary"
+                    (click)="processPayment(selectedPayment!)">
+              Process Payment
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
 </section>
+
+<!-- Enhanced Styles -->
+<style>
+  .timeline {
+    position: relative;
+    padding: 20px 0;
+  }
+
+  .timeline-item {
+    position: relative;
+    padding-left: 30px;
+    margin-bottom: 20px;
+  }
+
+  .timeline-badge {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+  }
+
+  .timeline-content {
+    background: #f8f9fa;
+    padding: 15px;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+  }
+
+  .timeline-item:before {
+    content: '';
+    position: absolute;
+    left: 5px;
+    top: 12px;
+    width: 2px;
+    height: calc(100% + 20px);
+    background: #dee2e6;
+  }
+
+  .timeline-item:last-child:before {
+    display: none;
+  }
+
+  .timeline-item:hover .timeline-content {
+    background: #e9ecef;
+    transform: translateX(5px);
+    transition: all 0.3s ease;
+  }
+
+  .progress {
+    height: 8px;
+    background-color: #e9ecef;
+  }
+
+  .progress-bar {
+    background-color: #0d6efd;
+    transition: width 0.6s ease;
+  }
+
+  .modal {
+    background-color: rgba(0, 0, 0, 0.5);
+  }
+
+  .modal-content {
+    border-radius: 10px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+  }
+
+  .card {
+    border: none;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+    transition: transform 0.2s ease;
+  }
+
+  .card:hover {
+    transform: translateY(-5px);
+  }
+
+  .chart-container {
+    position: relative;
+    height: 300px;
+    width: 100%;
+  }
+
+  .card {
+    transition: all 0.3s ease;
+  }
+
+  .card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+  }
+
+  .badge {
+    font-size: 0.9em;
+    padding: 0.5em 0.8em;
+  }
+
+  .form-check {
+    margin-right: 1rem;
+  }
+
+  .input-group {
+    margin-bottom: 0.5rem;
+  }
+
+  .btn-close {
+    font-size: 0.7em;
+    padding: 0.2em;
+  }
+
+  .timeline-item {
+    transition: all 0.3s ease;
+  }
+
+  .timeline-item:hover {
+    transform: translateX(5px);
+  }
+
+  .progress {
+    height: 8px;
+    background-color: #e9ecef;
+  }
+
+  .progress-bar {
+    background-color: #0d6efd;
+    transition: width 0.6s ease;
+  }
+</style>
 <!-- END PRICING -->
+

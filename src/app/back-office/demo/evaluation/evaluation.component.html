@@ -1,0 +1,254 @@
+<div class="evaluation-container">
+  <h2 class="title">Gestion des Évaluations</h2>
+
+  <!-- Statistiques rapides -->
+  <div class="stats-container">
+    <div class="stat-card">
+      <div class="stat-value">{{ evaluations.length }}</div>
+      <div class="stat-label">Total Évaluations</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-value">{{ averageNote }}/20</div>
+      <div class="stat-label">Moyenne</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-value">{{ upcomingCount }}</div>
+      <div class="stat-label">À venir</div>
+    </div>
+  </div>
+
+  <!-- Formulaire d'ajout -->
+  <div class="card evaluation-form">
+    <h3 class="form-title">Ajouter une nouvelle évaluation</h3>
+    <form (ngSubmit)="addEvaluation()" #evaluationForm="ngForm">
+      <div class="form-row">
+        <div class="form-group">
+          <label for="sujet">Sujet *</label>
+          <input type="text" id="sujet" [(ngModel)]="newEvaluation.sujet" name="sujet" required>
+        </div>
+
+        <div class="form-group">
+          <label for="note">Note</label>
+          <input type="number" id="note" [(ngModel)]="newEvaluation.note" name="note" 
+                min="0" max="20" step="0.5" placeholder="0-20">
+        </div>
+      </div>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label for="date">Date *</label>
+          <input type="date" id="date" 
+                [ngModel]="formatDateForInput(newEvaluation.dateEvaluation)" 
+                (ngModelChange)="onDateChange($event, 'new')"
+                name="dateEvaluation" required>
+        </div>
+
+        <div class="form-group">
+          <label for="location">Lieu *</label>
+          <input type="text" id="location" [(ngModel)]="newEvaluation.location" name="location" required>
+        </div>
+      </div>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label for="latitude">Latitude</label>
+          <input type="number" id="latitude" [(ngModel)]="newEvaluation.latitude" name="latitude" step="0.000001">
+        </div>
+
+        <div class="form-group">
+          <label for="longitude">Longitude</label>
+          <input type="number" id="longitude" [(ngModel)]="newEvaluation.longitude" name="longitude" step="0.000001">
+        </div>
+      </div>
+
+      <div class="form-actions">
+        <button type="submit" class="btn btn-primary" [disabled]="evaluationForm.invalid">
+          <i class="fas fa-plus"></i> Ajouter
+        </button>
+        <button type="button" class="btn btn-secondary" (click)="resetForm()">
+          <i class="fas fa-undo"></i> Réinitialiser
+        </button>
+      </div>
+    </form>
+  </div>
+
+  <!-- Liste des évaluations -->
+  <div class="card evaluation-list">
+    <div class="list-header">
+      <h3>Liste des Évaluations</h3>
+      
+      <div class="controls">
+        <div class="search-bar">
+          <input type="text" [(ngModel)]="searchTerm" 
+                (input)="filterBySearch()" 
+                placeholder="Rechercher...">
+          <button class="btn btn-search" (click)="filterBySearch()">
+            <i class="fas fa-search"></i>
+          </button>
+        </div>
+
+        <div class="filter-controls">
+          <button (click)="filterEvaluations('all')" 
+                 [class.active]="activeFilter === 'all'">
+            Toutes
+          </button>
+          <button (click)="filterEvaluations('upcoming')" 
+                 [class.active]="activeFilter === 'upcoming'">
+            À venir
+          </button>
+          <button (click)="filterEvaluations('completed')" 
+                 [class.active]="activeFilter === 'completed'">
+            Terminées
+          </button>
+        </div>
+
+        <div class="export-controls">
+          <button class="btn btn-export" (click)="exportToCSV()">
+            <i class="fas fa-file-csv"></i> CSV
+          </button>
+          <button class="btn btn-export" (click)="exportToExcel()">
+            <i class="fas fa-file-excel"></i> Excel
+          </button>
+        </div>
+      </div>
+    </div>
+    
+    <div *ngIf="loading" class="loading-indicator">
+      <i class="fas fa-spinner fa-spin"></i> Chargement...
+    </div>
+    
+    <div *ngIf="!loading && filteredEvaluations.length === 0" class="no-evaluations">
+      <p>Aucune évaluation trouvée pour ce filtre.</p>
+      <p *ngIf="activeFilter === 'upcoming'">Les évaluations à venir sont celles avec une date future et sans note.</p>
+    </div>
+    
+    <div class="table-responsive" *ngIf="!loading && filteredEvaluations.length > 0">
+      <table class="evaluation-table">
+        <thead>
+          <tr>
+            <th (click)="sort('sujet')">Sujet 
+              <span *ngIf="sortColumn === 'sujet'">{{sortDirection === 'asc' ? '↑' : '↓'}}</span>
+            </th>
+            <th (click)="sort('note')">Note
+              <span *ngIf="sortColumn === 'note'">{{sortDirection === 'asc' ? '↑' : '↓'}}</span>
+            </th>
+            <th (click)="sort('dateEvaluation')">Date
+              <span *ngIf="sortColumn === 'dateEvaluation'">{{sortDirection === 'asc' ? '↑' : '↓'}}</span>
+            </th>
+            <th>Lieu</th>
+            <th>Coordonnées</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let evaluation of paginatedEvaluations">
+            <!-- Mode Affichage -->
+            <td *ngIf="editedEvaluationId !== evaluation.idEvaluation">{{ evaluation.sujet }}</td>
+            <td *ngIf="editedEvaluationId !== evaluation.idEvaluation" 
+                [class.high-score]="evaluation.note && evaluation.note > 15"
+                [class.medium-score]="evaluation.note && evaluation.note > 10 && evaluation.note <= 15"
+                [class.low-score]="evaluation.note && evaluation.note <= 10">
+              {{ evaluation.note ?? '-' }}
+            </td>
+            <td *ngIf="editedEvaluationId !== evaluation.idEvaluation">
+              {{ evaluation.dateEvaluation | date:'dd/MM/yyyy' }}
+            </td>
+            <td *ngIf="editedEvaluationId !== evaluation.idEvaluation">{{ evaluation.location }}</td>
+            <td *ngIf="editedEvaluationId !== evaluation.idEvaluation">
+              <span *ngIf="evaluation.latitude && evaluation.longitude">
+                {{ evaluation.latitude | number:'1.4-4' }}, {{ evaluation.longitude | number:'1.4-4' }}
+              </span>
+              <span *ngIf="!evaluation.latitude || !evaluation.longitude">-</span>
+            </td>
+
+            <!-- Mode Édition -->
+            <td *ngIf="editedEvaluationId === evaluation.idEvaluation" colspan="6">
+              <form (ngSubmit)="updateEvaluation()" #editForm="ngForm" class="inline-edit-form">
+                <div class="form-row">
+                  <div class="form-group">
+                    <label>Sujet *</label>
+                    <input type="text" [(ngModel)]="editingEvaluation.sujet" name="sujet" required>
+                  </div>
+
+                  <div class="form-group">
+                    <label>Note</label>
+                    <input type="number" [(ngModel)]="editingEvaluation.note" name="note" 
+                          min="0" max="20" step="0.5">
+                  </div>
+                </div>
+
+                <div class="form-row">
+                  <div class="form-group">
+                    <label>Date *</label>
+                    <input type="date" 
+                          [ngModel]="formatDateForInput(editingEvaluation.dateEvaluation)" 
+                          (ngModelChange)="onDateChange($event, 'edit')"
+                          name="dateEvaluation" required>
+                  </div>
+
+                  <div class="form-group">
+                    <label>Lieu *</label>
+                    <input type="text" [(ngModel)]="editingEvaluation.location" name="location" required>
+                  </div>
+                </div>
+
+                <div class="form-row">
+                  <div class="form-group">
+                    <label>Latitude</label>
+                    <input type="number" [(ngModel)]="editingEvaluation.latitude" name="latitude" step="0.000001">
+                  </div>
+
+                  <div class="form-group">
+                    <label>Longitude</label>
+                    <input type="number" [(ngModel)]="editingEvaluation.longitude" name="longitude" step="0.000001">
+                  </div>
+                </div>
+
+                <div class="form-actions">
+                  <button type="submit" class="btn btn-save" [disabled]="editForm.invalid">
+                    <i class="fas fa-save"></i> Enregistrer
+                  </button>
+                  <button type="button" class="btn btn-cancel" (click)="cancelEdit()">
+                    <i class="fas fa-times"></i> Annuler
+                  </button>
+                </div>
+              </form>
+            </td>
+
+            <!-- Actions -->
+            <td class="actions" *ngIf="editedEvaluationId !== evaluation.idEvaluation">
+              <button class="btn btn-edit" (click)="startEdit(evaluation)">
+                <i class="fas fa-edit"></i> Modifier
+              </button>
+              <button class="btn btn-delete" (click)="deleteEvaluation(evaluation.idEvaluation)">
+                <i class="fas fa-trash-alt"></i> Supprimer
+              </button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+
+      <!-- Pagination -->
+      <div class="pagination" *ngIf="filteredEvaluations.length > itemsPerPage">
+        <button [disabled]="currentPage === 1" (click)="changePage(currentPage - 1)">
+          <i class="fas fa-chevron-left"></i>
+        </button>
+        
+        <span *ngFor="let page of getPageNumbers()" 
+              [class.active]="page === currentPage"
+              (click)="changePage(page)">
+          {{ page }}
+        </span>
+        
+        <button [disabled]="currentPage * itemsPerPage >= totalItems" 
+                (click)="changePage(currentPage + 1)">
+          <i class="fas fa-chevron-right"></i>
+        </button>
+      
+        <span class="page-info">
+          Page {{ currentPage }} sur {{ totalPages() }} ({{ totalItems }} éléments)
+        </span>
+      </div>
+    </div>
+  </div>
+</div>

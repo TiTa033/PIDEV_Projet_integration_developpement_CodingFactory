@@ -1,0 +1,53 @@
+#preloader .load {
+  transform: translateX(-300px);
+}
+.login-icon {
+  position: relative;
+}
+
+.login-tooltip {
+  position: absolute;
+  bottom: -30px;
+  left: 50%;
+  transform: translateX(-50%);
+  background-color: #0d6efd;
+  color: white;
+  padding: 4px 8px;
+  border-radius: 4px;
+  font-size: 12px;
+  white-space: nowrap;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.2s ease-in-out;
+  z-index: 10;
+}
+
+.login-icon:hover .login-tooltip {
+  opacity: 1;
+}
+.username-link {
+  background-color: rgba(13, 110, 253, 0.1); // soft blue
+  padding: 6px 14px;
+  border-radius: 25px;
+  transition: all 0.2s ease-in-out;
+  color: #0d6efd; // primary color
+  font-weight: 500;
+
+  &:hover {
+    background-color: rgba(13, 110, 253, 0.2);
+    text-decoration: none;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+    color: #084298; // darker primary
+  }
+
+  i {
+    font-size: 1.1rem;
+  }
+
+  .username-text {
+    font-size: 0.95rem;
+    letter-spacing: 0.3px;
+  }
+}
+
+

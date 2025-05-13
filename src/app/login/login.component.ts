@@ -10,11 +10,12 @@ import { AuthService } from 'src/app/services/auth.service';
 })
 export class LoginComponent {
   year = new Date().getFullYear();
-
+  profile_image:string=''
   credentials = { email: '', password: '' };
   errorMessage: string = '';
 
   constructor(private authService: AuthService, private router: Router) {}
+
 
   login() {
     this.authService.login(this.credentials).subscribe(
@@ -24,32 +25,35 @@ export class LoginComponent {
           console.log("✅ Token saved in localStorage:", response.access_token);
 
           try {
-            // ✅ Decode JWT Token
             const decodedToken: any = jwtDecode(response.access_token);
             console.log("🔍 Decoded Token:", decodedToken);
 
-            // ✅ Extract User ID & Name from Token (Fix the key name)
             if (decodedToken.id_user) {
               localStorage.setItem('userId', decodedToken.id_user.toString());
               console.log("✅ User ID saved:", decodedToken.id_user);
-            } else {
-              console.error("❌ User ID not found in token!");
             }
 
             if (decodedToken.name) {
               localStorage.setItem('username', decodedToken.name);
               console.log("✅ Username saved:", decodedToken.name);
-            } else {
-              console.error("❌ Username not found in token!");
             }
 
-            // ✅ Redirect Based on Role
+            // ✅ Save profile image from token if available
+            if (decodedToken.profileImage) {
+              localStorage.setItem('profileImage', decodedToken.profileImage);
+              console.log("✅ Profile image saved:", decodedToken.profileImage);
+            } else {
+              // Optional: Set default image if not provided
+              console.warn("⚠️ Profile image not found in token. Default used.");
+            }
+
             const userRole = decodedToken.role;
             if (userRole === 'ADMIN') {
               this.router.navigate(['/admin/dashboard']);
             } else {
-              this.router.navigate(['/']); // Change this route as needed
+              this.router.navigate(['/']);
             }
+
           } catch (error) {
             console.error("❌ Error decoding token:", error);
           }
@@ -62,5 +66,6 @@ export class LoginComponent {
       }
     );
   }
+
 
 }

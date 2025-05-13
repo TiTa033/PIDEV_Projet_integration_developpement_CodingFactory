@@ -74,6 +74,14 @@ export class UserService {
 
     return this.http.post<any>(`${this.apiUrl}/${userId}/profile/upload`, formData);
 }
+// ✅ Get profile image for a specific user ID
+  getProfileImage(userId: number): Observable<string> {
+    return this.http.get(`${this.apiUrl}/getImage/${userId}`, {
+      headers: this.getAuthHeaders(),
+      responseType: 'text' // Because the backend returns a plain string (image URL or base64)
+    });
+  }
+
 
 
 

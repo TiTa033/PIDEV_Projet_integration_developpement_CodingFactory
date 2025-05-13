@@ -6,7 +6,11 @@ import packageInfo from '../../package.json';
 
 export const environment = {
   production: false,
-  appVersion: packageInfo.version // ✅ Define appVersion here!
+  appVersion: packageInfo.version ,// ✅ Define appVersion here!
+  apiUrl: 'http://localhost:8086/api', // Backend base URL
+  stripePublicKey: 'pk_test_51RMTtWQ6GycRUWGTwujdhkpYROUAQ80iBvxFxAkcyM7SAoknDmyNjxCywRMxXWaCaGkv6CrggbtTI44gRLtyxSAS00UOvYrLDd',
+  apiBaseUrl: 'http://localhost:8089/stages' // Utilisez l'URL de votre API
+
 };
 
 

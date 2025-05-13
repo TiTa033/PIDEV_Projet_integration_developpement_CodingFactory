@@ -9,6 +9,7 @@ import { User } from './user.service';
 })
 export class AuthService {
   private apiUrl = 'http://localhost:8082/api/v1/auth';
+  private userURL = 'http://localhost:8082/api/v1/users'
   deleteUser(id: number): Observable<void> {
     return this.http.delete<void>(`${this.apiUrl}/delete/${id}`);
   }
@@ -16,17 +17,17 @@ export class AuthService {
   constructor(private http: HttpClient) {}
   getUserId(): number | null {
     const userId = localStorage.getItem('userId');
-  
+
     if (!userId) {
       console.error("❌ User ID not found in localStorage!");
       return null;
     }
-  
+
     const parsedId = parseInt(userId, 10);
     console.log("✅ Retrieved userId:", parsedId);
     return parsedId;
   }
-  
+
   isAuthenticated(): boolean {
     const token = localStorage.getItem('token');
     if (!token) return false; // ❌ No token, user is not authenticated
@@ -47,7 +48,7 @@ export class AuthService {
   getAllusers(): Observable<User[]> {
       return this.http.get<User[]>(`${this.apiUrl}/all`);
     }
-  
+
   register(user: any): Observable<any> {
     return this.http.post(`${this.apiUrl}/register`, user);
   }
@@ -55,20 +56,20 @@ export class AuthService {
     return this.http.post(`${this.apiUrl}/authenticate`, credentials).pipe(
       tap((response: any) => {
         console.log("🔵 Login response:", response); // Debugging
-  
+
         if (response && response.token) {
           localStorage.setItem('token', response.token);
           console.log("✅ Token saved!");
           const decodedToken: any = jwtDecode(response.access_token);
           localStorage.setItem('userId', decodedToken.userId.toString());
-          
+
           // Decode the token
           const decoded: any = jwtDecode(response.access_token);
           if (decoded && decoded.userId) {
             localStorage.setItem('userId', decoded.userId.toString());
             console.log("✅ User ID saved:", decoded.userId);
           }
-  
+
           // ✅ Store username (if backend sends it)
           if (response.firstname) {
             localStorage.setItem('username', response.firstname);
@@ -80,8 +81,8 @@ export class AuthService {
       })
     );
   }
-  
-  
+
+
   // ✅ Function to Get Username from Local Storage
   getUsername(): string | null {
     return localStorage.getItem('username');
@@ -102,12 +103,12 @@ export class AuthService {
   getProfileImage(): string | null {
     return localStorage.getItem('profileImage'); // ✅ Retrieve profile image
   }
-  
-  
-  
+
+
+
   changePassword(currentPassword: string, newPassword: string, confirmationPassword: string): Observable<any> {
     const userId = this.getUserId();  // ✅ Ensure userId is retrieved
-  
+
     if (!userId) {
       console.error('❌ User ID not found in localStorage! Cannot change password.');
       return new Observable(observer => {
@@ -115,29 +116,29 @@ export class AuthService {
         observer.complete();
       });
     }
-  
+
     const requestBody = {
       userId: userId,  // ✅ Ensure userId is included
       currentPassword: currentPassword,
       newPassword: newPassword,
       confirmationPassword: confirmationPassword
     };
-  
+
     console.log("📤 Sending PATCH request to change password with:", requestBody); // Debugging request
-  
+
     return this.http.patch(`${this.apiUrl}/change-password`, requestBody, {
       headers: this.getAuthHeaders() // ✅ Ensure Authorization header is included
     });
   }
-  
-  
-  
-  
-  
-  
-  
-  
-  
+
+
+
+
+
+
+
+
+
 
   logout(): void {
     localStorage.removeItem('token');
@@ -168,6 +169,13 @@ export class AuthService {
         return null;
     }
 }
+  runClusteringPrediction(): Observable<any[]> {
+    return this.http.post<any[]>(
+      `${this.userURL}/ai`,
+      {}, // Empty body since your endpoint doesn't require one
+      { headers: this.getAuthHeaders() }
+    );
+  }
 
 }
 

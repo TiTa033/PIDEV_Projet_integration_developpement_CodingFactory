@@ -1,219 +1,192 @@
-<div class="row p-t-25">
-  <div class="col-md-6">
-    <app-card cardTitle="Basic">
-      <h1>Inter</h1>
-      <h5>Font Family</h5>
-      <nav class="m-t-5">
-        <ol class="flex align-item-center font-size text-muted">
-          <li>
-            <h6 class="m-b-0">Regular</h6>
-          </li>
-          <li class="flex separate">/</li>
-          <li>
-            <h6 class="m-b-0">Medium</h6>
-          </li>
-          <li class="flex separate">/</li>
-          <li>
-            <h6 class="m-b-0">Bold</h6>
-          </li>
-        </ol>
-      </nav>
-    </app-card>
+<div class="container mt-5">
+  <h2 class="text-center mb-4 text-primary">
+    {{ isEditMode ? 'Modifier un Stage' : 'Créer un Stage' }}
+  </h2>
 
-    <app-card cardTitle="Heading">
-      <div class="m-b-15">
-        <h1>H1 Heading</h1>
-        <nav class="m-t-15">
-          <ol class="flex align-item-center font-size text-muted">
-            <li>
-              <h6 class="m-b-0">Size: 38px</h6>
-            </li>
-            <li class="flex separate">/</li>
-            <li>
-              <h6 class="m-b-0">Weight: Bold</h6>
-            </li>
-            <li class="flex separate">/</li>
-            <li>
-              <h6 class="m-b-0">Line Height: 46px</h6>
-            </li>
-          </ol>
-        </nav>
-      </div>
-      <mat-divider></mat-divider>
-      <div class="m-b-15 m-t-15">
-        <h2>H2 Heading</h2>
-        <nav class="m-t-15">
-          <ol class="flex align-item-center font-size text-muted">
-            <li>
-              <h6 class="m-b-0">Size: 30px</h6>
-            </li>
-            <li class="flex separate">/</li>
-            <li>
-              <h6 class="m-b-0">Weight: Bold</h6>
-            </li>
-            <li class="flex separate">/</li>
-            <li>
-              <h6 class="m-b-0">Line Height: 38px</h6>
-            </li>
-          </ol>
-        </nav>
-      </div>
-      <mat-divider></mat-divider>
-      <div class="m-b-15 m-t-15">
-        <h3>H3 Heading</h3>
-        <nav class="m-t-15">
-          <ol class="flex align-item-center font-size text-muted">
-            <li>
-              <h6 class="m-b-0">Size: 24px</h6>
-            </li>
-            <li class="flex separate">/</li>
-            <li>
-              <h6 class="m-b-0">Weight: Regular & Bold</h6>
-            </li>
-            <li class="flex separate">/</li>
-            <li>
-              <h6 class="m-b-0">Line Height: 32px</h6>
-            </li>
-          </ol>
-        </nav>
-      </div>
-      <mat-divider></mat-divider>
-      <div class="m-b-15 m-t-15">
-        <h4>H4 Heading</h4>
-        <nav class="m-t-15">
-          <ol class="flex align-item-center font-size text-muted">
-            <li>
-              <h6 class="m-b-0">Size: 20px</h6>
-            </li>
-            <li class="flex separate">/</li>
-            <li>
-              <h6 class="m-b-0">Weight: Bold</h6>
-            </li>
-            <li class="flex separate">/</li>
-            <li>
-              <h6 class="m-b-0">Line Height: 28px</h6>
-            </li>
-          </ol>
-        </nav>
-      </div>
-      <mat-divider></mat-divider>
-      <div class="m-b-15 m-t-15">
-        <h5>H5 Heading</h5>
-        <nav class="m-t-15">
-          <ol class="flex align-item-center font-size text-muted">
-            <li>
-              <h6 class="m-b-0">Size: 16px</h6>
-            </li>
-            <li class="flex separate">/</li>
-            <li>
-              <h6 class="m-b-0">Weight: Regular & Medium & Bold</h6>
-            </li>
-            <li class="flex separate">/</li>
-            <li>
-              <h6 class="m-b-0">Line Height: 24px</h6>
-            </li>
-          </ol>
-        </nav>
-      </div>
-      <mat-divider></mat-divider>
-      <div class="m-b-15 m-t-15">
-        <h6>H6 Heading / Subheading</h6>
-        <nav class="m-t-15">
-          <ol class="flex align-item-center font-size text-muted">
-            <li>
-              <h6 class="m-b-0">Size: 14px</h6>
-            </li>
-            <li class="flex separate">/</li>
-            <li>
-              <h6 class="m-b-0">Weight: Regular</h6>
-            </li>
-            <li class="flex separate">/</li>
-            <li>
-              <h6 class="m-b-0">Line Height: 22px</h6>
-            </li>
-          </ol>
-        </nav>
-      </div>
-    </app-card>
-  </div>
-  <div class="col-md-6">
-    <app-card cardTitle="Alignment">
-      <p class="mat-body-2" style="text-align: start">
-        Lorem ipsum dolor sit amet consectetur adipisicing elit. Ducimus, obcaecati quasi ab inventore odit non vel corrupti? Non unde
-        dolore ipsum possimus pariatur repellat corporis impedit vero, quam, facilis nostrum.
-      </p>
+  <div class="w-75 mx-auto bg-light p-5 rounded-lg shadow-lg">
+    <form [formGroup]="stageForm" (ngSubmit)="isEditMode ? updateStage() : addStage()">
 
-      <p class="mat-body-2" style="text-align: center">
-        Lorem ipsum dolor sit amet consectetur adipisicing elit. Ducimus, obcaecati quasi ab inventore odit non vel corrupti? Non unde
-        dolore ipsum possimus pariatur repellat corporis impedit vero, quam, facilis nostrum.
-      </p>
-      <p class="mat-body-2" style="text-align: end">
-        Lorem ipsum dolor sit amet consectetur adipisicing elit. Ducimus, obcaecati quasi ab inventore odit non vel corrupti? Non unde
-        dolore ipsum possimus pariatur repellat corporis impedit vero, quam, facilis nostrum.
-      </p>
-    </app-card>
-    <app-card cardTitle="Body 2">
-      <p class="mat-body-2"
-        >Lorem ipsum dolor sit amet consectetur, adipisicing elit. Veniam doloremque placeat at ut quis facilis, voluptates aliquam aut
-        vitae nihil, commodi quo. Reiciendis rerum dolorem voluptas minus unde voluptatibus vel.</p
-      >
-      <nav class="m-t-15">
-        <ol class="flex align-item-center font-size text-muted">
-          <li>
-            <h6 class="m-b-0">Size: 14px</h6>
-          </li>
-          <li class="flex separate">/</li>
-          <li>
-            <h6 class="m-b-0">Weight: Regular</h6>
-          </li>
-          <li class="flex separate">/</li>
-          <li>
-            <h6 class="m-b-0">Line Height: 22px</h6>
-          </li>
-        </ol>
-      </nav>
-    </app-card>
-    <app-card cardTitle="Subtitle">
-      <p class="mat-body-strong"
-        >Lorem ipsum dolor sit amet consectetur, adipisicing elit. Veniam doloremque placeat at ut quis facilis, voluptates aliquam aut
-        vitae nihil, commodi quo. Reiciendis rerum dolorem voluptas minus unde voluptatibus vel.</p
-      >
-      <nav class="m-t-15">
-        <ol class="flex align-item-center font-size text-muted">
-          <li>
-            <h6 class="m-b-0">Size: 12px</h6>
-          </li>
-          <li class="flex separate">/</li>
-          <li>
-            <h6 class="m-b-0">Weight: Medium</h6>
-          </li>
-          <li class="flex separate">/</li>
-          <li>
-            <h6 class="m-b-0">Line Height: 22px</h6>
-          </li>
-        </ol>
-      </nav>
-    </app-card>
-    <app-card cardTitle="Caption">
-      <p class="mat-caption"
-        >Lorem ipsum dolor sit amet consectetur, adipisicing elit. Veniam doloremque placeat at ut quis facilis, voluptates aliquam aut
-        vitae nihil, commodi quo. Reiciendis rerum dolorem voluptas minus unde voluptatibus vel.</p
-      >
-      <nav class="m-t-15">
-        <ol class="flex align-item-center font-size text-muted">
-          <li>
-            <h6 class="m-b-0">Size: 12px</h6>
-          </li>
-          <li class="flex separate">/</li>
-          <li>
-            <h6 class="m-b-0">Weight: Regular</h6>
-          </li>
-          <li class="flex separate">/</li>
-          <li>
-            <h6 class="m-b-0">Line Height: 22px</h6>
-          </li>
-        </ol>
-      </nav>
-    </app-card>
+      <!-- Sujet -->
+      <div class="form-group mb-4">
+        <label for="sujet" class="form-label">Sujet</label>
+        <input type="text" id="sujet" class="form-control" formControlName="sujet" placeholder="Entrez le sujet du stage">
+      </div>
+
+      <!-- Dates -->
+      <div class="row">
+        <div class="col-md-6 form-group mb-4">
+          <label for="dateDebut" class="form-label">Date Début</label>
+          <input type="date" id="dateDebut" class="form-control" formControlName="dateDebut">
+        </div>
+        <div class="col-md-6 form-group mb-4">
+          <label for="dateFin" class="form-label">Date Fin</label>
+          <input type="date" id="dateFin" class="form-control" formControlName="dateFin">
+        </div>
+      </div>
+
+      <!-- Statut & Type Stage -->
+      <div class="row">
+        <div class="col-md-6 form-group mb-4">
+          <label for="statut" class="form-label">Statut</label>
+          <select id="statut" class="form-control" formControlName="statut">
+            <option *ngFor="let status of statutList" [value]="status">{{ status }}</option>
+          </select>
+        </div>
+        <div class="col-md-6 form-group mb-4">
+          <label for="typeStage" class="form-label">Type Stage</label>
+          <select id="typeStage" class="form-control" formControlName="typeStage">
+            <option *ngFor="let type of typeStageList" [value]="type">{{ type }}</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- Informations Entreprise -->
+      <div class="form-group mb-4">
+        <label for="nomEntreprise" class="form-label">Nom Entreprise</label>
+        <input type="text" id="nomEntreprise" class="form-control" formControlName="nomEntreprise" placeholder="Nom de l'entreprise">
+      </div>
+
+      <!-- Encadrant & Étudiant -->
+      <div class="row">
+        <div class="col-md-6 form-group mb-4">
+          <label for="encadrantNom" class="form-label">Encadrant Nom</label>
+          <input type="text" id="encadrantNom" class="form-control" formControlName="encadrantNom" placeholder="Nom de l'encadrant">
+        </div>
+        <div class="col-md-6 form-group mb-4">
+          <label for="etudiantNom" class="form-label">Étudiant Nom</label>
+          <input type="text" id="etudiantNom" class="form-control" formControlName="etudiantNom" placeholder="Nom de l'étudiant">
+        </div>
+      </div>
+
+      <!-- Technologies -->
+      <div class="form-group mb-4">
+        <label class="form-label">Technologies</label>
+        <div *ngFor="let tech of technologieList" class="form-check">
+          <input type="checkbox" class="form-check-input" [value]="tech" (change)="toggleTech(tech)">
+          <label class="form-check-label">{{ tech }}</label>
+        </div>
+      </div>
+
+      <!-- Description -->
+      <div class="form-group mb-4">
+        <label for="description" class="form-label">Description</label>
+        <textarea id="description" class="form-control" formControlName="description" placeholder="Entrez une description du stage"></textarea>
+      </div>
+
+      <!-- Bouton de soumission -->
+      <div class="text-end">
+        <button type="submit" class="btn btn-primary btn-lg">
+          {{ isEditMode ? 'Modifier' : 'Créer' }} Stage
+        </button>
+      </div>
+
+    </form>
   </div>
 </div>
+
+<!-- Liste des Stages -->
+<h2 class="mt-5 text-center">Liste des Stages</h2>
+<div class="row g-4">
+  <div class="col-md-4" *ngFor="let stage of stages">
+    <div class="card shadow-sm">
+      <div class="card-header bg-primary text-white">
+        <h5 class="card-title">Stage ID: {{ stage.id }}</h5>
+      </div>
+      <div class="card-body">
+        <ul class="list-group">
+          <li class="list-group-item"><strong>Sujet:</strong> {{ stage.sujet }}</li>
+          <li class="list-group-item"><strong>Date Début:</strong> {{ stage.dateDebut | date:'dd/MM/yyyy' }}</li>
+          <li class="list-group-item"><strong>Date Fin:</strong> {{ stage.dateFin | date:'dd/MM/yyyy' }}</li>
+          <li class="list-group-item"><strong>Statut:</strong> <span class="badge bg-info">{{ stage.statut }}</span></li>
+          <li class="list-group-item"><strong>Entreprise:</strong> {{ stage.nomEntreprise }}</li>
+          <li class="list-group-item"><strong>Encadrant:</strong> {{ stage.encadrantNom }}</li>
+          <li class="list-group-item"><strong>Étudiant:</strong> {{ stage.etudiantNom }}</li>
+          <li class="list-group-item"><strong>Type:</strong> {{ stage.typeStage }}</li>
+          <li class="list-group-item"><strong>Technologies:</strong> {{ stage.technologies.join(', ') }}</li>
+          <li class="list-group-item"><strong>Description:</strong> {{ stage.description }}</li>
+        </ul>
+        <div class="d-flex justify-content-between mt-3">
+          <button class="btn btn-danger btn-sm" (click)="deleteStage(stage.id)">Supprimer</button>
+          <button class="btn btn-warning btn-sm" (click)="selectStageForUpdate(stage)">Modifier</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<head>
+  <style>
+    .container {
+      background-color: #f9f9f9;
+      border-radius: 15px;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1), 0 1px 3px rgba(0, 0, 0, 0.08);
+      padding: 30px;
+      margin-top: 40px;
+    }
+
+    .container h2 {
+      font-family: 'Arial', sans-serif;
+      font-weight: bold;
+      color: #4b8e8d;
+    }
+
+    .form-group label {
+      font-weight: 600;
+      color: #333;
+    }
+
+    .form-group input,
+    .form-group select,
+    .form-group textarea {
+      border-radius: 8px;
+      border: 1px solid #d1d1d1;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12);
+      padding: 10px;
+      font-size: 14px;
+    }
+
+    .form-group input:focus,
+    .form-group select:focus,
+    .form-group textarea:focus {
+      outline: none;
+      border-color: #4b8e8d;
+      box-shadow: 0 0 8px rgba(75, 142, 141, 0.5);
+    }
+
+    button[type="submit"] {
+      background-color: #4b8e8d;
+      border: none;
+      padding: 10px 20px;
+      color: white;
+      font-size: 16px;
+      font-weight: bold;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+    }
+
+    button[type="submit"]:hover {
+      background-color: #3d7a77;
+    }
+
+    .bg-light {
+      background-color: #fff;
+      border-radius: 15px;
+      padding: 30px;
+    }
+
+    .w-50 {
+      width: 50%;
+      margin: 0 auto;
+    }
+
+    .shadow {
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    }
+
+    .mt-4 {
+      margin-top: 30px;
+    }
+
+  </style>
+</head>

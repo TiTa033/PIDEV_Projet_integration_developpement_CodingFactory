@@ -1,0 +1,73 @@
+<section class="section" id="freelance">
+<div class="freelance-container">
+  <!-- Section Freelance Management -->
+  <button class="add-button" (click)="toggleForm()">+ Add New Freelance</button>
+
+  <!-- Freelance Filters -->
+  <div class="filters">
+    <label>Tarif min:
+      <input type="number" [(ngModel)]="filterMin" class="filter-input" />
+    </label>
+    <label>Tarif max:
+      <input type="number" [(ngModel)]="filterMax" class="filter-input" />
+    </label>
+    <button class="filter-button" (click)="applyFilter()">Filter</button>
+    <button class="reset-button" (click)="clearFilter()">Reset</button>
+    <button class="sort-button" (click)="sortByTarif('asc')">Sort ↑</button>
+    <button class="sort-button" (click)="sortByTarif('desc')">Sort ↓</button>
+  </div>
+
+  <!-- Freelance List -->
+  <div class="freelance-list">
+    <div class="freelance-card" *ngFor="let freelance of filteredFreelances">
+      <h3>{{ freelance.nom }}</h3>
+      <p><strong>Email:</strong> {{ freelance.email }}</p>
+      <p><strong>Tarif:</strong> {{ freelance.tarifHoraire }} DT/h</p>
+      <div class="actions">
+        <button class="edit-button" (click)="editFreelance(freelance)">Edit</button>
+        <button class="delete-button" (click)="deleteFreelance(freelance.id)">Delete</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Freelance Form -->
+  <div *ngIf="isFormVisible" class="form-container">
+    <form (ngSubmit)="addOrUpdateFreelance()" class="freelance-form">
+      <input [(ngModel)]="newFreelance.nom" name="nom" required placeholder="Nom" />
+      <input [(ngModel)]="newFreelance.email" name="email" required placeholder="Email" />
+      <input type="number" [(ngModel)]="newFreelance.tarifHoraire" name="tarifHoraire" required placeholder="Tarif horaire" />
+      <div class="form-actions">
+        <button type="submit" class="submit-button">{{ editingFreelance ? 'Update' : 'Add' }}</button>
+        <button type="button" class="cancel-button" (click)="toggleForm()">Cancel</button>
+      </div>
+    </form>
+  </div>
+
+  <!-- Chatbot Section -->
+<div class="chatbot-container">
+  <div class="chat-header">
+    <h3>Chatbot</h3>
+  </div>
+
+  <div class="chat-box">
+    <div *ngFor="let message of messages" class="message">
+      <p [ngClass]="{'user-message': message.sender === 'user', 'bot-message': message.sender === 'bot'}">
+        {{ message.text }}
+      </p>
+    </div>
+    <div *ngIf="isTyping" class="typing-indicator">Le bot est en train d’écrire...</div>
+  </div>
+
+  <div class="chat-suggestions" *ngIf="suggestions.length > 0">
+    <button *ngFor="let suggestion of suggestions" (click)="handleSuggestion(suggestion)">
+      {{ suggestion }}
+    </button>
+  </div>
+
+  <div class="chat-input">
+    <input [(ngModel)]="userMessage" (keyup.enter)="sendMessage()" placeholder="Tapez un message..." />
+    <button (click)="sendMessage()">Envoyer</button>
+  </div>
+</div>
+</div>
+</section>

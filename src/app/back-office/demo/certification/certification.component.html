@@ -1,0 +1,103 @@
+<div class="certification-container">
+    <h2 class="certification-title">Certifications</h2>
+  
+    <!-- Section OCR/PDF améliorée -->
+    <div class="pdf-verify-section">
+      <h3>Vérifier une certification à partir d'un PDF</h3>
+      <div class="pdf-upload">
+        <input type="file" accept=".pdf,application/pdf" (change)="onPdfSelected($event)" #pdfInput>
+        <button (click)="verifyCertification()" [disabled]="!selectedPdf || isOcrLoading">
+          <span *ngIf="!isOcrLoading">Vérifier le PDF</span>
+          <span *ngIf="isOcrLoading">Analyse en cours...</span>
+        </button>
+      </div>
+      
+      <div *ngIf="isOcrLoading" class="loading-indicator">
+        <div class="spinner"></div>
+        <span>Analyse du PDF en cours...</span>
+      </div>
+      
+      <div *ngIf="ocrResult" class="pdf-result" [class.success]="ocrResult.includes('✅')" [class.error]="ocrResult.includes('❌') || ocrResult.includes('Erreur')">
+        <strong>Résultat:</strong> {{ ocrResult }}
+      </div>
+    </div>
+  
+    <!-- Formulaire d'ajout -->
+    <div class="add-form">
+      <input type="text" placeholder="Nom" class="form-input" [(ngModel)]="newCertification.nom">
+      <input type="text" placeholder="Organisme" class="form-input" [(ngModel)]="newCertification.organisme">
+      <input type="date" class="form-input" [(ngModel)]="newCertification.dateObtention">
+      <button class="add-btn" (click)="addCertification()">Ajouter</button>
+    </div>
+  
+    <!-- Barre de recherche et statistiques -->
+    <div class="search-stats-container">
+      <input 
+        type="text" 
+        placeholder="Rechercher..." 
+        class="search-input" 
+        [(ngModel)]="searchTerm" 
+        (input)="onSearchChange()"
+      >
+      
+      <div class="stats-container">
+        <span>Total: {{stats.total}}</span>
+        <div class="stat-item" *ngFor="let org of objectKeys(stats.byOrganisme) | slice:0:3">
+          {{org}}: {{stats.byOrganisme[org]}}
+        </div>
+      </div>
+    </div>
+  
+    <!-- En-têtes de tableau -->
+    <div class="certification-header">
+      <span class="header-item sortable" (click)="sort('nom')">
+        Nom 
+        <span *ngIf="sortField === 'nom'">{{sortDirection === 'asc' ? '↑' : '↓'}}</span>
+      </span>
+      <span class="header-item sortable" (click)="sort('organisme')">
+        Organisme 
+        <span *ngIf="sortField === 'organisme'">{{sortDirection === 'asc' ? '↑' : '↓'}}</span>
+      </span>
+      <span class="header-item sortable" (click)="sort('dateObtention')">
+        Date 
+        <span *ngIf="sortField === 'dateObtention'">{{sortDirection === 'asc' ? '↑' : '↓'}}</span>
+      </span>
+      <span class="header-item">Actions</span>
+    </div>
+  
+    <!-- Liste des certifications -->
+    <div class="certification-list">
+      <div class="certification-item" *ngFor="let certification of certifications">
+        <span class="certification-name">{{ certification.nom }}</span>
+        <span class="certification-org">{{ certification.organisme }}</span>
+        <span class="certification-date">{{ certification.dateObtention | date }}</span>
+        <div class="certification-actions">
+          <button class="edit-btn" (click)="editCertification(certification)">Modifier</button>
+          <button class="delete-btn" (click)="deleteCertification(certification.idCertification)">Supprimer</button>
+        </div>
+      </div>
+    </div>
+  
+    <!-- Pagination -->
+    <div class="pagination" *ngIf="totalPages > 1">
+      <button 
+        *ngFor="let page of pages" 
+        [class.active]="page === currentPage"
+        (click)="changePage(page)"
+      >
+        {{page}}
+      </button>
+    </div>
+  
+    <!-- Formulaire de modification -->
+    <div class="edit-form" *ngIf="editingCertification">
+      <h3>Modifier Certification</h3>
+      <input type="text" class="form-input" [(ngModel)]="editingCertification.nom">
+      <input type="text" class="form-input" [(ngModel)]="editingCertification.organisme">
+      <input type="date" class="form-input" [(ngModel)]="editingCertification.dateObtention">
+      <div class="form-actions">
+        <button class="save-btn" (click)="updateCertification()">Sauvegarder</button>
+        <button class="cancel-btn" (click)="cancelEdit()">Annuler</button>
+      </div>
+    </div>
+  </div>

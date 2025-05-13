@@ -1,0 +1,102 @@
+<div class="row">
+  <div class="col-sm-12">
+    <h2>Course</h2>
+    <table>
+      <thead>
+        <tr>
+          <th>Title</th>
+          <th>Description</th>
+          <th>Objectives</th>
+          <th>Tags</th>
+          <th>Rating</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let course of courses">
+          <td>{{ course.title }}</td>
+          <td>{{ course.description }}</td>
+          <td>{{ course.objectives }}</td>
+          <td>{{ course.tags.join(', ') }}</td>
+          <td>{{ course.rating }} ({{ course.ratingCount }} ratings)</td>
+          <td>
+            <button (click)="editCourse(course)">Edit</button>
+            <button (click)="deleteCourse(course.idCourse)">Delete</button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+
+<!-- Form to Add New Course -->
+<div>
+  <h3>Add New Course</h3>
+  <label>Title:</label>
+  <input type="text" [(ngModel)]="newCourse.title" #title="ngModel"
+         required minlength="5" maxlength="100" />
+  <p *ngIf="title.invalid && title.touched" style="color: red;">
+    Title must be between 5 and 100 characters.
+  </p>
+
+  <label>Description:</label>
+  <textarea [(ngModel)]="newCourse.description" #desc="ngModel"
+         required minlength="10" maxlength="500"></textarea>
+  <p *ngIf="desc.invalid && desc.touched" style="color: red;">
+    Description must be between 10 and 500 characters.
+  </p>
+
+  <label>Objectives:</label>
+  <textarea [(ngModel)]="newCourse.objectives" #obj="ngModel"
+         required minlength="10" maxlength="300"></textarea>
+  <p *ngIf="obj.invalid && obj.touched" style="color: red;">
+    Objectives must be between 10 and 300 characters.
+  </p>
+
+  <label>Tags (comma separated):</label>
+  <input type="text" [(ngModel)]="newCourse.tagsInput" 
+         placeholder="tag1, tag2, tag3" required />
+  
+  <label>Initial Rating:</label>
+  <input type="number" [(ngModel)]="newCourse.rating" min="0" max="5" step="0.1" required />
+  
+  <label>Rating Count:</label>
+  <input type="number" [(ngModel)]="newCourse.ratingCount" min="0" required />
+
+  <button [disabled]="!validateCourse(newCourse)" (click)="addCourse()">Add</button>
+</div>
+
+<!-- Edit Form -->
+<div *ngIf="editingCourse">
+  <h3>Edit Course</h3>
+  <label>Title:</label>
+  <input type="text" [(ngModel)]="editingCourse.title" #editTitle="ngModel"
+         required minlength="5" maxlength="100" />
+  <p *ngIf="editTitle.invalid && editTitle.touched" style="color: red;">
+    Title must be between 5 and 100 characters.
+  </p>
+
+  <label>Description:</label>
+  <textarea [(ngModel)]="editingCourse.description" #editDesc="ngModel"
+         required minlength="10" maxlength="500"></textarea>
+  <p *ngIf="editDesc.invalid && editDesc.touched" style="color: red;">
+    Description must be between 10 and 500 characters.
+  </p>
+
+  <label>Objectives:</label>
+  <textarea [(ngModel)]="editingCourse.objectives" #editObj="ngModel"
+         required minlength="10" maxlength="300"></textarea>
+  <p *ngIf="editObj.invalid && editObj.touched" style="color: red;">
+    Objectives must be between 10 and 300 characters.
+  </p>
+
+  <label>Tags (comma separated):</label>
+  <input type="text" [(ngModel)]="editingCourse.tagsInput" required />
+  
+  <label>Rating:</label>
+  <input type="number" [(ngModel)]="editingCourse.rating" min="0" max="5" step="0.1" required />
+  
+  <label>Rating Count:</label>
+  <input type="number" [(ngModel)]="editingCourse.ratingCount" min="0" required />
+
+  <button [disabled]="!validateCourse(editingCourse)" (click)="updateCourse()">Update</button>
+  <button (click)="cancelEdit()">Cancel</button>
+</div>

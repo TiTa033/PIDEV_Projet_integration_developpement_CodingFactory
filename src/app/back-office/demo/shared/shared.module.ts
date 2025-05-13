@@ -22,7 +22,8 @@ import { MatTabsModule } from '@angular/material/tabs';
 import { MatTooltipModule } from '@angular/material/tooltip';
 
 // project
-import { CardComponent } from 'src/app/back-office/@theme/components/card/card.component';
+import { CardComponent } from './components/card/card.component';
+import { LoadingSpinnerComponent } from './components/loading-spinner/loading-spinner.component';
 
 // third party import
 import { NgScrollbarModule } from 'ngx-scrollbar';
@@ -47,7 +48,24 @@ const MaterialModules = [
 ];
 
 @NgModule({
-  imports: [CommonModule, FormsModule, ReactiveFormsModule, NgScrollbarModule, CardComponent, MaterialModules],
-  exports: [FormsModule, ReactiveFormsModule, NgScrollbarModule, CardComponent, MaterialModules]
+  declarations: [
+    CardComponent,
+    LoadingSpinnerComponent
+  ],
+  imports: [
+    CommonModule,
+    FormsModule,
+    ReactiveFormsModule,
+    NgScrollbarModule,
+    MaterialModules
+  ],
+  exports: [
+    FormsModule,
+    ReactiveFormsModule,
+    NgScrollbarModule,
+    CardComponent,
+    LoadingSpinnerComponent,
+    MaterialModules
+  ]
 })
 export class SharedModule {}

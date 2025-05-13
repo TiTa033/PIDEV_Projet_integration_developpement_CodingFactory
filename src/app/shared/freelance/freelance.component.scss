@@ -1,0 +1,207 @@
+/* Freelance Styles */
+.freelance-container {
+  margin: 20px;
+  font-family: Arial, sans-serif;
+}
+
+.add-button {
+  background-color: #007bff;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+.add-button:hover {
+  background-color: #0056b3;
+}
+
+.filters {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 15px;
+}
+
+.filter-input {
+  padding: 5px;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+}
+
+.filter-button, .reset-button, .sort-button {
+  background-color: #28a745;
+  color: white;
+  padding: 6px 12px;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.filter-button:hover, .reset-button:hover, .sort-button:hover {
+  background-color: #218838;
+}
+
+.freelance-list {
+  margin-top: 20px;
+}
+
+.freelance-card {
+  background-color: #f8f9fa;
+  padding: 15px;
+  border-radius: 10px;
+  margin-bottom: 15px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.actions {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.edit-button, .delete-button {
+  background-color: #ffc107;
+  color: white;
+  padding: 5px 10px;
+  border-radius: 5px;
+  cursor: pointer;
+  margin-left: 10px;
+}
+
+.delete-button {
+  background-color: #dc3545;
+}
+
+.edit-button:hover, .delete-button:hover {
+  opacity: 0.8;
+}
+
+.form-container {
+  background-color: #f1f1f1;
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.form-actions {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.submit-button, .cancel-button {
+  background-color: #007bff;
+  color: white;
+  padding: 8px 15px;
+  border-radius: 6px;
+  border: none;
+  cursor: pointer;
+  margin-left: 10px;
+}
+
+.submit-button:hover, .cancel-button:hover {
+  background-color: #0056b3;
+}
+
+/* Chatbot Styles */
+.chatbot-container {
+  margin-top: 30px;
+  background-color: #ffffff;
+  padding: 20px;
+  border-radius: 12px;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+  width: 100%;
+  max-width: 400px;
+}
+
+.chat-header {
+  background-color: #007bff;
+  color: white;
+  padding: 10px;
+  border-radius: 8px;
+  text-align: center;
+}
+
+.chat-box {
+  height: 300px;
+  overflow-y: auto;
+  margin-bottom: 15px;
+  border: 1px solid #ccc;
+  padding: 10px;
+  background-color: #f9f9f9;
+  border-radius: 8px;
+}
+
+.message {
+  margin-bottom: 10px;
+}
+
+.message p {
+  padding: 8px 12px;
+  border-radius: 10px;
+  display: inline-block;
+  max-width: 80%;
+}
+
+.user-message {
+  background-color: #007bff;
+  color: white;
+  text-align: right;
+}
+
+.bot-message {
+  background-color: #e0e0e0;
+  color: black;
+  text-align: left;
+}
+
+.chat-input {
+  display: flex;
+  justify-content: space-between;
+}
+
+.chat-input input {
+  width: 80%;
+  padding: 10px;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+}
+.typing-indicator {
+  font-style: italic;
+  color: #666;
+  margin-bottom: 10px;
+}
+
+.chat-suggestions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 10px;
+}
+
+.chat-suggestions button {
+  background-color: #6c757d;
+  color: white;
+  border: none;
+  padding: 6px 12px;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.chat-suggestions button:hover {
+  background-color: #5a6268;
+}
+
+
+.chat-input button {
+  background-color: #28a745;
+  color: white;
+  border: none;
+  padding: 10px 15px;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.chat-input button:hover {
+  background-color: #218838;
+}

@@ -28,6 +28,8 @@ export class CandidatureManagementComponent implements OnInit {
   page: number = 1;
   statusFilter: string = '';
   stats: SubmissionStat[] = [];
+  clusteringResult: any[] = [];
+
 
   // ng2-charts config
   public lineChartData: ChartConfiguration<'line'>['data'] = {
@@ -50,6 +52,8 @@ export class CandidatureManagementComponent implements OnInit {
     this.fetchCandidatures();
     this.fetchUsers();
     this.loadStats();
+    this.getClustering();
+
   }
 
   loadStats() {
@@ -126,4 +130,32 @@ export class CandidatureManagementComponent implements OnInit {
       console.error('Download failed', error);
     });
   }
+  getClustering(): void {
+    this.authService.runClusteringPrediction().subscribe({
+      next: (result) => {
+        console.log("🧠 Clustering result:", result);
+
+        // Group users by cluster label
+        const clusters: { [key: string]: any[] } = {};
+
+        result.forEach((item: any, index: number) => {
+          const label = item.label;
+          if (!clusters[label]) {
+            clusters[label] = [];
+          }
+          clusters[label].push(this.users[index]); // Match users to cluster by index
+        });
+
+        // Convert to array format for display
+        this.clusteringResult = Object.entries(clusters).map(([label, users]) => ({
+          label,
+          users
+        }));
+      },
+      error: (err) => {
+        console.error("❌ Error during clustering prediction", err);
+      }
+    });
+  }
+
 }

@@ -1,0 +1,60 @@
+<section class="section bg-gradient-to-r" id="certif">
+  <div class="container mx-auto px-4">
+    <h2 class="text-center text-6xl font-extrabold text-white mb-16">Certifications</h2>
+
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-12">
+      <div *ngFor="let certification of certifications" class="certification-card">
+        <div class="card-header flex justify-between items-center mb-6">
+          <h3 class="text-2xl font-semibold text-gray-800 transition-all duration-500 hover:text-purple-200">
+            {{ certification.nom }}
+          </h3>
+          <span class="badge"
+                [ngClass]="getStatusClass(certification.status)"
+                [style.background-color]="certification.status === 'valid' ? '#006400' : ''">
+            {{ getStatusText(certification.status) }}
+            <span *ngIf="certification.status === 'expiring' && certification.expiresIn !== undefined">
+              ({{ certification.expiresIn }}j)
+            </span>
+          </span>
+        </div>
+
+        <p class="text-sm text-gray-600 mb-4">
+          Date : {{ certification.dateObtention | date:'dd/MM/yyyy' }}
+        </p>
+
+        <div class="qr-code-container flex justify-center mb-6">
+          <img *ngIf="certification.qrCodeBase64"
+               [src]="certification.qrCodeBase64"
+               alt="QR Code"
+               class="qr-code"
+               [style.filter]="certification.status === 'expired' ? 'saturate(5)' : ''">
+        </div>
+
+        <div class="alert alert-warning" *ngIf="certification.status === 'expiring'">
+          <i class="fas fa-exclamation-triangle"></i> Expire dans {{ certification.expiresIn }} jours
+        </div>
+
+        <div class="alert alert-danger" *ngIf="certification.status === 'expired'">
+          <i class="fas fa-times-circle"></i> Certification expirée
+        </div>
+
+        <div class="card-actions flex justify-between items-center gap-4 mt-4">
+          <button class="btn-share" (click)="share(certification)">
+            Partager
+          </button>
+          <div class="flex gap-4">
+            <button class="btn-download" (click)="download(certification, 'pdf')">
+              Télécharger PDF
+            </button>
+            <button class="btn-download" (click)="download(certification, 'png')">
+              Télécharger PNG
+            </button>
+            <button class="btn-download" (click)="download(certification, 'jpeg')">
+              Télécharger JPEG
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>

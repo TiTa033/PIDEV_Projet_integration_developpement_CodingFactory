@@ -19,6 +19,7 @@ import { Index5Component } from './index5/index5.component';
 import { Index6Component } from './index6/index6.component';
 import { BloglistComponent } from './bloglist/bloglist.component';
 import { BlogdetailsComponent } from './blogdetails/blogdetails.component';
+import {PricingComponent} from "../shared/pricing/pricing.component";
 
 
 
@@ -33,11 +34,12 @@ import { BlogdetailsComponent } from './blogdetails/blogdetails.component';
     BloglistComponent,
     BlogdetailsComponent
   ],
-  imports: [
-    CommonModule,
-    PagesRoutingModule,
-    SharedModule,
-    SlickCarouselModule
-  ]
+    imports: [
+        CommonModule,
+        PagesRoutingModule,
+        SharedModule,
+        SlickCarouselModule,
+        PricingComponent
+    ]
 })
 export class PagesModule { }
